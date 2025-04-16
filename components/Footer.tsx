@@ -82,7 +82,9 @@ const Footer = () => {
 
           <div className="w-56 flex-shrink-0 md:mx-0 mx-auto text-center md:text-right">
             <div className="flex gap-2 justify-center md:justify-end items-center">
-              <Image
+              
+            <a href="https://faexperts.com" aria-label="FA Experts Website Link">
+            <Image
                 src={faexpert}
                 alt="Financial Aid Experts logo"
                 className="w-40"
@@ -91,10 +93,12 @@ const Footer = () => {
                 width={160}
                 height={160}
               />
+              </a>
             </div>
+            
 
             <p className="mt-3 text-sm text-base-content/80">
-              FA Wizard is a technology product of Financial Aid Experts, Inc.
+            FA Wizard™ is a product of Financial Aid Experts, Inc.
             </p>
           </div>
         </div>
