@@ -57,39 +57,93 @@ const TOS = () => {
           className="leading-relaxed whitespace-pre-wrap"
           style={{ fontFamily: "sans-serif" }}
         >
-          {`Last Updated: September 26, 2023
+          {`Last Updated: April 16, 2025
 
-Welcome to ShipFast!
+Terms of Service
 
-These Terms of Service ("Terms") govern your use of the ShipFast website at https://shipfa.st ("Website") and the services provided by ShipFast. By using our Website and services, you agree to these Terms.
+Effective Date: April 16, 2025
 
-1. Description of ShipFast
+Welcome to FA Wizard™! By accessing or using our website at https://fawizard.com, you agree to be bound by the following Terms of Service (“Terms”). Please read them carefully.
 
-ShipFast is a platform that offers a JavaScript code boilerplate to assist entrepreneurs in launching their startups more efficiently.
+If you do not agree with any part of these Terms, you should not use our services.
 
-2. Ownership and Usage Rights
+⸻
 
-When you purchase a package from ShipFast, you gain the right to download and use the code provided for creating applications. You own the code you create but do not have the right to resell it. We offer a full refund within 7 days of purchase, as specified in our refund policy.
+1. Who We Are
 
-3. User Data and Privacy
+FA Wizard™ provides comprehensive tools to simplify Title IV compliance, automate financial aid processes, and help educational institutions stay ahead of regulatory requirements.
 
-We collect and store user data, including name, email, and payment information, as necessary to provide our services. For details on how we handle your data, please refer to our Privacy Policy at https://shipfa.st/privacy-policy.
+For questions or support, you can contact us at:
+📧 david.canaski@faexperts.com
 
-4. Non-Personal Data Collection
+⸻
 
-We use web cookies to collect non-personal data for the purpose of improving our services and user experience.
+2. Using FA Wizard
 
-5. Governing Law
+You agree to use FA Wizard only for lawful purposes and in accordance with all applicable federal, state, and local laws. We may suspend or terminate your access if you violate these Terms.
 
-These Terms are governed by the laws of France.
+⸻
 
-6. Updates to the Terms
+3. User Data
 
-We may update these Terms from time to time. Users will be notified of any changes via email.
+We collect certain information to provide our services effectively, including:
+	•	Your name
+	•	Email address
+	•	School information
+	•	Payment details
 
-For any questions or concerns regarding these Terms of Service, please contact us at marc@shipfa.st.
+We also use cookies and other technologies to collect non-personal data to improve your experience.
 
-Thank you for using ShipFast!`}
+For more details, please review our Privacy Policy.
+
+⸻
+
+4. Your Account
+
+You are responsible for maintaining the confidentiality of your account login credentials. If you suspect unauthorized activity on your account, please contact us immediately.
+
+⸻
+
+5. Payments
+
+Access to certain features may require payment. All billing information must be accurate and kept up to date. We may use third-party services to process payments securely.
+
+⸻
+
+6. Intellectual Property
+
+All content, trademarks, and tools on FA Wizard are the property of FA Wizard™ or its licensors and may not be copied, distributed, or used without our permission.
+
+⸻
+
+7. Disclaimer
+
+FA Wizard™ is provided “as is” and “as available.” We do our best to ensure reliability, but we do not guarantee uninterrupted service or error-free content.
+
+⸻
+
+8. Limitation of Liability
+
+To the fullest extent permitted by law, FA Wizard™ shall not be liable for any indirect, incidental, or consequential damages arising from your use of the service.
+
+⸻
+
+9. Governing Law
+
+These Terms are governed by the laws of the United States. Any disputes shall be resolved in accordance with U.S. legal procedures.
+
+⸻
+
+10. Updates to These Terms
+
+We may update these Terms from time to time. When we do, we’ll notify you via email. Continued use of the service after updates constitutes acceptance of the new Terms.
+
+⸻
+
+By using FA Wizard™, you acknowledge that you have read, understood, and agree to these Terms of Service.
+
+⸻
+`}
         </pre>
       </div>
     </main>
