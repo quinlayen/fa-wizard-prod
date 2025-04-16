@@ -63,7 +63,6 @@ Effective Date: April 16, 2025
 At FA Wizard™, your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information when you use our website at https://fawizard.com.
 
 ⸻
-
 1. Information We Collect
 
 We collect the following personal information when you interact with our website or services:
@@ -75,38 +74,32 @@ We collect the following personal information when you interact with our website
 We also collect non-personal information through cookies to enhance your experience on our site.
 
 ⸻
-
 2. Purpose of Data Collection
 
 We collect your data solely for the purpose of processing orders and providing you with our compliance and automation services.
 
 ⸻
-
 3. Data Sharing
 
 We do not share your personal data with any third parties. Your information is used only to deliver and improve our services.
 
 ⸻
-
 4. Children’s Privacy
 
 FA Wizard™ does not knowingly collect or store personal information from children under the age of 13. If we learn that we have collected such information, we will take appropriate steps to delete it.
 
 ⸻
-
 5. Updates to This Policy
 
 We may update this Privacy Policy from time to time. When we do, we will notify you by email. Continued use of the website after any updates indicates your acceptance of the revised policy.
 
 ⸻
-
 6. Contact Us
 
 If you have any questions or concerns about this Privacy Policy, please contact us at:
 📧 david.canaski@faexperts.com
 
 ⸻
-
 Thank you for trusting FA Wizard™.`}
         </pre>
       </div>
