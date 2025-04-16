@@ -32,9 +32,11 @@ export default function AdminSchoolsManager() {
   const [schools, setSchools] = useState<School[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const supabase = createClient();
+  const [supabase] = useState(() => createClient());
 
   useEffect(() => {
+    let mounted = true;
+
     async function fetchSchools() {
       try {
         const { data, error } = await supabase
@@ -47,16 +49,26 @@ export default function AdminSchoolsManager() {
           .order("created_at", { ascending: false });
 
         if (error) throw error;
-        setSchools(data || []);
+        if (mounted) {
+          setSchools(data || []);
+        }
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to fetch schools");
+        if (mounted) {
+          setError(err instanceof Error ? err.message : "Failed to fetch schools");
+        }
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     }
 
     fetchSchools();
-  }, []);
+
+    return () => {
+      mounted = false;
+    };
+  }, [supabase]);
 
   if (loading) {
     return <div className="text-center py-8">Loading schools...</div>;
