@@ -1,6 +1,6 @@
 import { createClient } from "@/libs/supabase/server";
 import { redirect } from "next/navigation";
-import AdminContactsManager from "@/components/AdminContactsManager";
+import AdminSchoolsManager from "@/components/AdminSchoolsManager";
 
 export const dynamic = "force-dynamic";
 
@@ -8,10 +8,12 @@ export default async function AdminPage() {
   const supabase = createClient();
   
   // Check if user is authenticated and is an admin
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   
   if (!user) {
-    redirect("/login");
+    redirect("/signin");
   }
 
   // Check if user is admin (you'll need to implement this check based on your auth setup)
@@ -26,16 +28,9 @@ export default async function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen p-8 pb-24">
-      <section className="max-w-6xl mx-auto space-y-8">
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl md:text-4xl font-extrabold">Admin Dashboard</h1>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow">
-          <AdminContactsManager />
-        </div>
-      </section>
-    </main>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
+      <AdminSchoolsManager />
+    </div>
   );
 } 

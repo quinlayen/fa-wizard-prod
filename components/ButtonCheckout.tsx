@@ -14,9 +14,13 @@ import logo from "@/app/icon.png";
 const ButtonCheckout = ({
   priceId,
   mode = "payment",
+  onSuccess,
+  className,
 }: {
   priceId: string;
   mode?: "payment" | "subscription";
+  onSuccess?: () => void;
+  className?: string;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -34,6 +38,10 @@ const ButtonCheckout = ({
         }
       );
 
+      if (onSuccess) {
+        onSuccess();
+      }
+
       window.location.href = url;
     } catch (e) {
       console.error(e);
@@ -44,22 +52,20 @@ const ButtonCheckout = ({
 
   return (
     <button
-      className="btn btn-primary btn-block group"
+      className={`btn btn-primary btn-block group ${className || ''}`}
       onClick={() => handlePayment()}
     >
       {isLoading ? (
         <span className="loading loading-spinner loading-xs"></span>
       ) : (
-
         <Image
-        src={logo}
-        alt={`${config.appName} logo`}
-        priority={true}
-        className="w-10 h-10"
-        width={24}
-        height={24}
-      />
-        
+          src={logo}
+          alt={`${config.appName} logo`}
+          priority={true}
+          className="w-10 h-10"
+          width={24}
+          height={24}
+        />
       )}
       Get {config?.appName}
     </button>
