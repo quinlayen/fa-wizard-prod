@@ -3,46 +3,39 @@
 import { useState, useEffect, useRef } from "react";
 import type { JSX } from "react";
 
-const trackBullets = [
-  "Monitor your compliance status 24/7 with real-time alerts.",
-  "Receive instant updates on new federal regulations.",
-  "Eliminate manual tracking and reduce human error.",
-  "Gain peace of mind knowing you’re always audit-ready.",
+const policiesBullets = ['Covers ~36 federally required policies', 
+  'Institution-wide compliance, not just FA', 
+  'Ready-to-go templates, fully editable', 
+  'Streamlines audits and inspections']
+
+const disclosuresBullets = ['Disclose key data, metrics, and policies', 
+  'Hosted 24/7 via your custom microsite', 
+  'Compliant with Title IV and HEA standards', 
+  'Easily updated without web dev skills'
 ];
 
-const craftBullets = [
-  "Start with pre-built templates designed for compliance.",
-  "Customize policies to reflect your institution's language and tone.",
-  "Update documents quickly as regulations change.",
-  "Ensure consistency and professionalism across all policies.",
+const calendarBullets = ['Pre-loaded with DOE deadlines', 
+  'Automatic email reminders', 
+  'Task assignments with due dates', 
+  'Never miss reporting or submission windows'
 ];
 
-const scheduleBullets = [
-  "Visualize upcoming deadlines on a unified calendar.",
-  "Sync with your personal or team calendars (Google, Outlook, etc.).",
-  "Receive automated reminders before key submission dates.",
-  "Assign responsibilities and track task completion.",
+const launchBullets = ['P&P Manual, Disclosure Site, Calendar', 
+  'Guided setup in under one day', 
+  'Instant operational readiness', 
+  'Built-in audit confidence'
 ];
 
-const vaultBullets = [
-  "Store all documents in one encrypted, cloud-based hub.",
-  "Search and filter files in seconds with smart indexing.",
-  "Grant role-based access to ensure document security.",
-  "Access your documents from anywhere, anytime.",
+const customizeBullets = ['Every word, page, and deadline editable', 
+  'Add school-specific rules or formatting', 
+  'Build your brand into your compliance', 
+  'No technical skills required'
 ];
 
-const pulseBullets = [
-  "Instantly generate audit-ready reports on-demand.",
-  "Highlight areas of risk or non-compliance in real time.",
-  "Export reports in professional formats (PDF, Excel).",
-  "Always be prepared for internal reviews or federal audits.",
-];
-
-const accessBullets = [
-  "Allow students to check their financial aid status anytime.",
-  "Share award letters and required documents digitally.",
-  "Enable secure messaging between students and staff.",
-  "Reduce office foot traffic with self-service access.",
+const updateBullets = ['Automatic updates to all content', 
+  'Real-time alerts to responsible staff', 
+  'Logs every change for transparency', 
+  'Stay compliant year after year'
 ];
 
 const features: {
@@ -52,14 +45,14 @@ const features: {
   tooltip: string;
 }[] = [
   {
-    name: "Track",
+    name: "Policies",
     tooltip: "Stay compliant with zero effort.",
     description: (
       <ul className="space-y-1">
-        {trackBullets.map((item, index) => (
+        {policiesBullets.map((item, index) => (
           <li key={item} 
           className={`flex items-center gap-3 font-medium ${
-            index === trackBullets.length - 1 ? "!text-[#FDB913]" : ""
+            index === policiesBullets.length - 1 ? "!text-[#FDB913]" : ""
           }`}
       >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-[18px] h-[18px] inline shrink-0 opacity-80">
@@ -77,14 +70,14 @@ const features: {
     ),
   },
   {
-    name: "Craft",
+    name: "Disclosures",
     tooltip: "Tailor policies to your institution's voice.",
     description: (
       <ul className="space-y-2">
-        {craftBullets.map((item, index) => (
+        {disclosuresBullets.map((item, index) => (
           <li key={item} 
               className={`flex items-center gap-3 font-medium ${
-                index === craftBullets.length - 1 ? "!text-[#FDB913]" : ""
+                index === disclosuresBullets.length - 1 ? "!text-[#FDB913]" : ""
               }`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-[18px] h-[18px] inline shrink-0 opacity-80">
@@ -102,14 +95,14 @@ const features: {
     ),
   },
   {
-    name: "Schedule",
+    name: "Calendar",
     tooltip: "Never miss a beat. Time is power.",
     description: (
       <ul className="space-y-2">
-        {scheduleBullets.map((item, index) => (
+        {calendarBullets.map((item, index) => (
            <li key={item} 
            className={`flex items-center gap-3 font-medium ${
-             index === scheduleBullets.length - 1 ? "!text-[#FDB913]" : ""
+             index === calendarBullets.length - 1 ? "!text-[#FDB913]" : ""
            }`}
        >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-[18px] h-[18px] inline shrink-0 opacity-80">
@@ -127,14 +120,14 @@ const features: {
     ),
   },
   {
-    name: "Vault",
+    name: "Launch",
     tooltip: "All your policies, protected and in one place.",
     description: (
       <ul className="space-y-2">
-        {vaultBullets.map((item, index) => (
+        {launchBullets.map((item, index) => (
            <li key={item} 
            className={`flex items-center gap-3 font-medium ${
-             index === vaultBullets.length - 1 ? "!text-[#FDB913]" : ""
+             index === launchBullets.length - 1 ? "!text-[#FDB913]" : ""
            }`}
        >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-[18px] h-[18px] inline shrink-0 opacity-80">
@@ -152,14 +145,14 @@ const features: {
     ),
   },
   {
-    name: "Pulse",
+    name: "Customize",
     tooltip: "Real-time insight, zero guesswork.",
     description: (
       <ul className="space-y-2">
-        {pulseBullets.map((item, index) => (
+        {customizeBullets.map((item, index) => (
            <li key={item} 
            className={`flex items-center gap-3 font-medium ${
-             index === pulseBullets.length - 1 ? "!text-[#FDB913]" : ""
+             index === customizeBullets.length - 1 ? "!text-[#FDB913]" : ""
            }`}
        >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-[18px] h-[18px] inline shrink-0 opacity-80">
@@ -177,14 +170,14 @@ const features: {
     ),
   },
   {
-    name: "Access",
+    name: "Update",
     tooltip: "Empowering students, simplifying support.",
     description: (
       <ul className="space-y-2">
-        {accessBullets.map((item, index) => (
+        {updateBullets.map((item, index) => (
            <li key={item} 
            className={`flex items-center gap-3 font-medium ${
-             index === accessBullets.length - 1 ? "!text-[#FDB913]" : ""
+             index === updateBullets.length - 1 ? "!text-[#FDB913]" : ""
            }`}
        >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-[18px] h-[18px] inline shrink-0 opacity-80">

@@ -14,26 +14,31 @@ interface FAQItemProps {
 const faqList: FAQItemProps[] = [
   {
     question: "What is the FA Wizard™ system?",
-    answer: <div className="space-y-2 leading-relaxed">FA Wizard™ is an automated system designed to help small schools manage Title IV compliance efficiently.</div>,
+    answer: <div className="space-y-2 leading-relaxed">FFA Wizard™ is an automated system designed to help small schools manage Title IV
+compliance efficiently and affordably.</div>,
   },
   {
     question: "How does the reminder calendar work?",
     answer: (
       <p>
-        The interactive reminder calendar sends automated emails to remind staff of upcoming federal deadlines, ensuring compliance is maintained.
+        The interactive and customizable reminder calendar sends automated emails to remind
+staff (and their supervisors) of upcoming federal deadlines, ensuring compliance is
+maintained.
       </p>
     ),
   },
   {
     question: "Can I customize the Policy and Procedure Manual?",
     answer: (
-      <div className="space-y-2 leading-relaxed">Yes, FA Wizard™ provides a comprehensive manual with customizable policies that you can tailor to your school’s specific needs.</div>
+      <div className="space-y-2 leading-relaxed">Yes, all three components of FA Wizard™ are not only complete and compliant as
+delivered, but are also completely customizable for your school’s unique needs.</div>
     ),
   },
   {
     question: "What is included in the Title IV Disclosure Websites?",
     answer: (
-      <div className="space-y-2 leading-relaxed">Our websites ensure that all required disclosures are easily accessible and up-to-date, including links to your online catalog and other critical information.</div>
+      <div className="space-y-2 leading-relaxed">Your school’s Consumer Information website will include menus linking to thirty different
+pages of disclosures. We provide a custom URL to be linked from your website.</div>
     ),
   },
   {
