@@ -3,7 +3,7 @@ import { ConfigProps } from "./types/config";
 
 const config = {
   // REQUIRED
-  appName: "FA Wizard",
+  appName: "FA Wizard™",
   // REQUIRED: a short description of your app for SEO tags (can be overwritten)
   appDescription:
     "Automated Title IV compliance and deadline reminders.",
@@ -35,13 +35,13 @@ const config = {
         priceAnchor: 349,
         features: [
           {
-            name: "Real-time compliance monitoring",
+            name: "Instantly access 36+ prewritten federal policies",
           },
-          { name: "Automated policy updates" },
-          { name: "Document management" },
-          { name: "Audit reporting" },
-          { name: "Student portal access" },
-          { name: "24/7 support" },
+          { name: "Fully customizable Policy & Procedure Manual" },
+          { name: "Automated Consumer Information Disclosure website" },
+          { name: "Always-on access for students, staff, and regulators" },
+          { name: "Built to meet Title IV and Higher Ed Act standards" },
+          { name: "Say goodbye to compliance guesswork forever" },
         ],
       },
       {
@@ -57,13 +57,13 @@ const config = {
         priceAnchor: 280,
         features: [
           {
-            name: "Real-time compliance monitoring",
+            name: "Instantly access 36+ prewritten federal policies",
           },
-          { name: "Automated policy updates" },
-          { name: "Document management" },
-          { name: "Audit reporting" },
-          { name: "Student portal access" },
-          // { name: "24/7 support" },
+          { name: "Fully customizable Policy & Procedure Manual" },
+          { name: "Automated Consumer Information Disclosure website" },
+          { name: "Always-on access for students, staff, and regulators" },
+          { name: "Built to meet Title IV and Higher Ed Act standards" },
+          { name: "Say goodbye to compliance guesswork forever" },
         ],
       },
     ],

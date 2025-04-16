@@ -76,7 +76,7 @@ const Hero = () => {
             Get {config.appName}
           </button>
           <p className="text-2xl font-bold text-[#003767] leading-tight font-oswald text-center">
-            Get the revolutionary FA Wizard™ system for only <span className="text-[#FDB913]">$280 / month!</span>
+            Get the revolutionary FA Wizard™ system for only <span className="text-[#FDB913]">$299 / month!</span>
           </p>
         </div>
       </div>
