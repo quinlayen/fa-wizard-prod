@@ -1,3 +1,7 @@
+"use client";
+
+import React from "react";
+
 const Arrow = ({ extraStyle }: { extraStyle: string }) => {
   return (
     <svg
