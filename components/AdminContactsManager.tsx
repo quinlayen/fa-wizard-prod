@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { createClient } from '@/libs/supabase/client';
 
@@ -16,35 +17,47 @@ interface Contact {
 export default function AdminContactsManager() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [editingContact, setEditingContact] = useState<Contact | null>(null);
-  const supabase = createClient();
+  const [supabase] = useState(() => createClient());
 
   useEffect(() => {
-    fetchContacts();
-  }, []);
+    let mounted = true;
 
-  const fetchContacts = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('contacts')
-        .select('*')
-        .order('created_at', { ascending: false });
+    async function fetchContacts() {
+      try {
+        const { data, error } = await supabase
+          .from('contacts')
+          .select('*')
+          .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setContacts(data || []);
-    } catch (error) {
-      console.error('Error fetching contacts:', error);
-    } finally {
-      setLoading(false);
+        if (error) throw error;
+        if (mounted) {
+          setContacts(data || []);
+        }
+      } catch (err) {
+        if (mounted) {
+          setError(err instanceof Error ? err.message : 'Failed to fetch contacts');
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
     }
-  };
+
+    fetchContacts();
+
+    return () => {
+      mounted = false;
+    };
+  }, [supabase]);
 
   const handleEdit = (contact: Contact) => {
     setEditingContact(contact);
   };
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSave = async () => {
     if (!editingContact) return;
 
     try {
@@ -60,178 +73,133 @@ export default function AdminContactsManager() {
         .eq('id', editingContact.id);
 
       if (error) throw error;
+
+      setContacts(contacts.map(contact => 
+        contact.id === editingContact.id ? editingContact : contact
+      ));
       setEditingContact(null);
-      fetchContacts();
-    } catch (error) {
-      console.error('Error updating contact:', error);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update contact');
     }
   };
 
-  const handleDelete = async (contactId: string) => {
-    if (!confirm('Are you sure you want to delete this contact?')) return;
-
+  const handleDelete = async (id: string) => {
     try {
       const { error } = await supabase
         .from('contacts')
         .delete()
-        .eq('id', contactId);
+        .eq('id', id);
 
       if (error) throw error;
-      fetchContacts();
-    } catch (error) {
-      console.error('Error deleting contact:', error);
+
+      setContacts(contacts.filter(contact => contact.id !== id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete contact');
     }
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="text-center py-8">Loading contacts...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500 text-center py-8">{error}</div>;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Manage Contacts</h2>
-        <button
-          onClick={() => setEditingContact({
-            id: '',
-            full_name: '',
-            title: '',
-            email: '',
-            office_phone: '',
-            cell_phone: '',
-            created_at: new Date().toISOString(),
-          })}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Add New Contact
-        </button>
+        <h2 className="text-2xl font-bold">Contact Management</h2>
+        <div className="text-sm text-gray-500">
+          Total Contacts: {contacts.length}
+        </div>
       </div>
 
       {editingContact && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
-            <h3 className="text-xl font-bold mb-4">
-              {editingContact.id ? 'Edit Contact' : 'Add New Contact'}
-            </h3>
-            <form onSubmit={handleSave} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Full Name</label>
-                  <input
-                    type="text"
-                    value={editingContact.full_name}
-                    onChange={(e) => setEditingContact({ ...editingContact, full_name: e.target.value })}
-                    className="w-full p-2 border rounded"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Title</label>
-                  <input
-                    type="text"
-                    value={editingContact.title}
-                    onChange={(e) => setEditingContact({ ...editingContact, title: e.target.value })}
-                    className="w-full p-2 border rounded"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Email</label>
-                  <input
-                    type="email"
-                    value={editingContact.email}
-                    onChange={(e) => setEditingContact({ ...editingContact, email: e.target.value })}
-                    className="w-full p-2 border rounded"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Office Phone</label>
-                  <input
-                    type="tel"
-                    value={editingContact.office_phone}
-                    onChange={(e) => setEditingContact({ ...editingContact, office_phone: e.target.value })}
-                    className="w-full p-2 border rounded"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Cell Phone</label>
-                  <input
-                    type="tel"
-                    value={editingContact.cell_phone}
-                    onChange={(e) => setEditingContact({ ...editingContact, cell_phone: e.target.value })}
-                    className="w-full p-2 border rounded"
-                    required
-                  />
-                </div>
-              </div>
-              <div className="flex justify-end space-x-4">
-                <button
-                  type="button"
-                  onClick={() => setEditingContact(null)}
-                  className="px-4 py-2 border rounded hover:bg-gray-100"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                >
-                  Save
-                </button>
-              </div>
-            </form>
+        <div className="bg-white p-6 rounded-lg shadow border border-gray-200">
+          <h3 className="text-xl font-bold mb-4">Edit Contact</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Full Name</label>
+              <input
+                type="text"
+                value={editingContact.full_name}
+                onChange={(e) => setEditingContact({ ...editingContact, full_name: e.target.value })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Title</label>
+              <input
+                type="text"
+                value={editingContact.title}
+                onChange={(e) => setEditingContact({ ...editingContact, title: e.target.value })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <input
+                type="email"
+                value={editingContact.email}
+                onChange={(e) => setEditingContact({ ...editingContact, email: e.target.value })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Office Phone</label>
+              <input
+                type="tel"
+                value={editingContact.office_phone}
+                onChange={(e) => setEditingContact({ ...editingContact, office_phone: e.target.value })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Cell Phone</label>
+              <input
+                type="tel"
+                value={editingContact.cell_phone}
+                onChange={(e) => setEditingContact({ ...editingContact, cell_phone: e.target.value })}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+          <div className="mt-4 flex justify-end space-x-3">
+            <button
+              onClick={() => setEditingContact(null)}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSave}
+              className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
+            >
+              Save Changes
+            </button>
           </div>
         </div>
       )}
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white">
-          <thead>
-            <tr>
-              <th className="px-6 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Name
-              </th>
-              <th className="px-6 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Title
-              </th>
-              <th className="px-6 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Email
-              </th>
-              <th className="px-6 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Office Phone
-              </th>
-              <th className="px-6 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Cell Phone
-              </th>
-              <th className="px-6 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {contacts.map((contact) => (
-              <tr key={contact.id}>
-                <td className="px-6 py-4 border-b border-gray-200">
-                  {contact.full_name}
-                </td>
-                <td className="px-6 py-4 border-b border-gray-200">
-                  {contact.title}
-                </td>
-                <td className="px-6 py-4 border-b border-gray-200">
-                  {contact.email}
-                </td>
-                <td className="px-6 py-4 border-b border-gray-200">
-                  {contact.office_phone}
-                </td>
-                <td className="px-6 py-4 border-b border-gray-200">
-                  {contact.cell_phone}
-                </td>
-                <td className="px-6 py-4 border-b border-gray-200">
+      <div className="bg-white shadow overflow-hidden sm:rounded-md">
+        <ul className="divide-y divide-gray-200">
+          {contacts.map((contact) => (
+            <li key={contact.id} className="px-6 py-4">
+              <div className="flex items-center justify-between">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">
+                    {contact.full_name}
+                  </p>
+                  <p className="text-sm text-gray-500">{contact.title}</p>
+                  <p className="text-sm text-gray-500">{contact.email}</p>
+                  <p className="text-sm text-gray-500">Office: {contact.office_phone}</p>
+                  <p className="text-sm text-gray-500">Cell: {contact.cell_phone}</p>
+                </div>
+                <div className="flex items-center space-x-3">
                   <button
                     onClick={() => handleEdit(contact)}
-                    className="text-blue-600 hover:text-blue-900 mr-3"
+                    className="text-indigo-600 hover:text-indigo-900"
                   >
                     Edit
                   </button>
@@ -241,12 +209,18 @@ export default function AdminContactsManager() {
                   >
                     Delete
                   </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
+
+      {contacts.length === 0 && (
+        <div className="text-center py-8 text-gray-500">
+          No contacts have been added yet.
+        </div>
+      )}
     </div>
   );
 } 

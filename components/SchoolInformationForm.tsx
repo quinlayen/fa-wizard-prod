@@ -1,370 +1,385 @@
 'use client';
 
-import React from 'react';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createClient } from '@/libs/supabase/client';
-
-interface ContactFormData {
-  fullName: string;
-  title: string;
-  email: string;
-  officePhone: string;
-  cellPhone: string;
-}
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
 
 interface SchoolFormData {
-  fullSchoolName: string;
-  shortSchoolName: string;
-  streetAddress: string;
+  full_school_name: string;
+  short_school_name: string;
+  street_address: string;
   city: string;
   state: string;
-  zipCode: string;
-  primaryContact: ContactFormData;
-  secondaryContact: ContactFormData;
+  zip_code: string;
+  primary_contact: {
+    full_name: string;
+    title: string;
+    email: string;
+    office_phone: string;
+    cell_phone: string;
+  };
+  secondary_contact: {
+    full_name: string;
+    title: string;
+    email: string;
+    office_phone: string;
+    cell_phone: string;
+  };
 }
 
 export default function SchoolInformationForm() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<SchoolFormData>({
-    fullSchoolName: '',
-    shortSchoolName: '',
-    streetAddress: '',
+    full_school_name: '',
+    short_school_name: '',
+    street_address: '',
     city: '',
     state: '',
-    zipCode: '',
-    primaryContact: {
-      fullName: '',
+    zip_code: '',
+    primary_contact: {
+      full_name: '',
       title: '',
       email: '',
-      officePhone: '',
-      cellPhone: '',
+      office_phone: '',
+      cell_phone: '',
     },
-    secondaryContact: {
-      fullName: '',
+    secondary_contact: {
+      full_name: '',
       title: '',
       email: '',
-      officePhone: '',
-      cellPhone: '',
+      office_phone: '',
+      cell_phone: '',
     },
   });
 
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function fetchSchoolData() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error('No user found');
+
+        const { data: school, error } = await supabase
+          .from('schools')
+          .select(`
+            *,
+            primary_contact:contacts!primary_contact_id(*),
+            secondary_contact:contacts!secondary_contact_id(*)
+          `)
+          .eq('user_id', user.id)
+          .single();
+
+        if (error) throw error;
+
+        if (school) {
+          setFormData({
+            full_school_name: school.full_school_name || '',
+            short_school_name: school.short_school_name || '',
+            street_address: school.street_address || '',
+            city: school.city || '',
+            state: school.state || '',
+            zip_code: school.zip_code || '',
+            primary_contact: {
+              full_name: school.primary_contact?.full_name || '',
+              title: school.primary_contact?.title || '',
+              email: school.primary_contact?.email || '',
+              office_phone: school.primary_contact?.office_phone || '',
+              cell_phone: school.primary_contact?.cell_phone || '',
+            },
+            secondary_contact: {
+              full_name: school.secondary_contact?.full_name || '',
+              title: school.secondary_contact?.title || '',
+              email: school.secondary_contact?.email || '',
+              office_phone: school.secondary_contact?.office_phone || '',
+              cell_phone: school.secondary_contact?.cell_phone || '',
+            },
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching school data:', error);
+        toast.error('Failed to load school information');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchSchoolData();
+  }, []);
+
+  const handleInputChange = (parent: keyof SchoolFormData, child: string, value: string) => {
+    setFormData(prev => {
+      const newData = { ...prev };
+      if (parent === 'primary_contact' || parent === 'secondary_contact') {
+        newData[parent] = {
+          ...newData[parent],
+          [child]: value
+        };
+      } else {
+        newData[parent] = value as any;
+      }
+      return newData;
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const supabase = createClient();
-    
+    setSaving(true);
+
     try {
-      // First, insert primary contact
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('No user found');
+
+      // First, create or update the primary contact
       const { data: primaryContact, error: primaryError } = await supabase
         .from('contacts')
-        .insert([{
-          full_name: formData.primaryContact.fullName,
-          title: formData.primaryContact.title,
-          email: formData.primaryContact.email,
-          office_phone: formData.primaryContact.officePhone,
-          cell_phone: formData.primaryContact.cellPhone,
-        }])
+        .upsert({
+          full_name: formData.primary_contact.full_name,
+          title: formData.primary_contact.title,
+          email: formData.primary_contact.email,
+          office_phone: formData.primary_contact.office_phone,
+          cell_phone: formData.primary_contact.cell_phone,
+        })
         .select()
         .single();
 
       if (primaryError) throw primaryError;
 
-      // Then, insert secondary contact
+      // Then, create or update the secondary contact
       const { data: secondaryContact, error: secondaryError } = await supabase
         .from('contacts')
-        .insert([{
-          full_name: formData.secondaryContact.fullName,
-          title: formData.secondaryContact.title,
-          email: formData.secondaryContact.email,
-          office_phone: formData.secondaryContact.officePhone,
-          cell_phone: formData.secondaryContact.cellPhone,
-        }])
+        .upsert({
+          full_name: formData.secondary_contact.full_name,
+          title: formData.secondary_contact.title,
+          email: formData.secondary_contact.email,
+          office_phone: formData.secondary_contact.office_phone,
+          cell_phone: formData.secondary_contact.cell_phone,
+        })
         .select()
         .single();
 
       if (secondaryError) throw secondaryError;
 
-      // Finally, insert school with references to both contacts
+      // Finally, create or update the school record
       const { error: schoolError } = await supabase
         .from('schools')
-        .insert([{
-          full_school_name: formData.fullSchoolName,
-          short_school_name: formData.shortSchoolName,
-          street_address: formData.streetAddress,
+        .upsert({
+          user_id: user.id,
+          full_school_name: formData.full_school_name,
+          short_school_name: formData.short_school_name,
+          street_address: formData.street_address,
           city: formData.city,
           state: formData.state,
-          zip_code: formData.zipCode,
+          zip_code: formData.zip_code,
           primary_contact_id: primaryContact.id,
           secondary_contact_id: secondaryContact.id,
-        }]);
+        });
 
       if (schoolError) throw schoolError;
-      
-      alert('School information submitted successfully!');
-      // Reset form
-      setFormData({
-        fullSchoolName: '',
-        shortSchoolName: '',
-        streetAddress: '',
-        city: '',
-        state: '',
-        zipCode: '',
-        primaryContact: {
-          fullName: '',
-          title: '',
-          email: '',
-          officePhone: '',
-          cellPhone: '',
-        },
-        secondaryContact: {
-          fullName: '',
-          title: '',
-          email: '',
-          officePhone: '',
-          cellPhone: '',
-        },
-      });
+
+      toast.success('School information saved successfully!');
+      router.refresh();
     } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('Error submitting form. Please try again.');
+      console.error('Error saving school data:', error);
+      toast.error('Failed to save school information');
+    } finally {
+      setSaving(false);
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    if (name.includes('.')) {
-      const [parent, child] = name.split('.');
-      setFormData(prev => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent as keyof SchoolFormData],
-          [child]: value
-        }
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
-  };
+  if (loading) {
+    return <div className="text-center py-8">Loading school information...</div>;
+  }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold">School Information</h2>
-        
+    <form onSubmit={handleSubmit} className="space-y-8">
+      {/* School Information */}
+      <div className="bg-white p-6 rounded-lg shadow">
+        <h2 className="text-xl font-bold mb-4">School Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Full School Name</label>
+            <label className="block text-sm font-medium text-gray-700">Full School Name</label>
             <input
               type="text"
-              name="fullSchoolName"
-              value={formData.fullSchoolName}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
+              value={formData.full_school_name}
+              onChange={(e) => handleInputChange('full_school_name', '', e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               required
             />
           </div>
-          
           <div>
-            <label className="block text-sm font-medium mb-1">Short School Name</label>
+            <label className="block text-sm font-medium text-gray-700">Short School Name</label>
             <input
               type="text"
-              name="shortSchoolName"
-              value={formData.shortSchoolName}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
+              value={formData.short_school_name}
+              onChange={(e) => handleInputChange('short_school_name', '', e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               required
             />
           </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">Street Address</label>
-          <input
-            type="text"
-            name="streetAddress"
-            value={formData.streetAddress}
-            onChange={handleInputChange}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1">City</label>
+            <label className="block text-sm font-medium text-gray-700">Street Address</label>
             <input
               type="text"
-              name="city"
+              value={formData.street_address}
+              onChange={(e) => handleInputChange('street_address', '', e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">City</label>
+            <input
+              type="text"
               value={formData.city}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
+              onChange={(e) => handleInputChange('city', '', e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               required
             />
           </div>
-          
           <div>
-            <label className="block text-sm font-medium mb-1">State</label>
+            <label className="block text-sm font-medium text-gray-700">State</label>
             <input
               type="text"
-              name="state"
               value={formData.state}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
+              onChange={(e) => handleInputChange('state', '', e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               required
             />
           </div>
-          
           <div>
-            <label className="block text-sm font-medium mb-1">ZIP Code</label>
+            <label className="block text-sm font-medium text-gray-700">ZIP Code</label>
             <input
               type="text"
-              name="zipCode"
-              value={formData.zipCode}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
+              value={formData.zip_code}
+              onChange={(e) => handleInputChange('zip_code', '', e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               required
             />
           </div>
         </div>
       </div>
 
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold">Primary Contact Information</h2>
+      {/* Primary Contact */}
+      <div className="bg-white p-6 rounded-lg shadow">
+        <h2 className="text-xl font-bold mb-4">Primary Contact</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Full Name</label>
+            <label className="block text-sm font-medium text-gray-700">Full Name</label>
             <input
               type="text"
-              name="primaryContact.fullName"
-              value={formData.primaryContact.fullName}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
+              value={formData.primary_contact.full_name}
+              onChange={(e) => handleInputChange('primary_contact', 'full_name', e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               required
             />
           </div>
-          
           <div>
-            <label className="block text-sm font-medium mb-1">Title</label>
+            <label className="block text-sm font-medium text-gray-700">Title</label>
             <input
               type="text"
-              name="primaryContact.title"
-              value={formData.primaryContact.title}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
+              value={formData.primary_contact.title}
+              onChange={(e) => handleInputChange('primary_contact', 'title', e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               required
             />
           </div>
-          
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700">Email</label>
             <input
               type="email"
-              name="primaryContact.email"
-              value={formData.primaryContact.email}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
+              value={formData.primary_contact.email}
+              onChange={(e) => handleInputChange('primary_contact', 'email', e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               required
             />
           </div>
-          
           <div>
-            <label className="block text-sm font-medium mb-1">Office Phone</label>
+            <label className="block text-sm font-medium text-gray-700">Office Phone</label>
             <input
               type="tel"
-              name="primaryContact.officePhone"
-              value={formData.primaryContact.officePhone}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
+              value={formData.primary_contact.office_phone}
+              onChange={(e) => handleInputChange('primary_contact', 'office_phone', e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               required
             />
           </div>
-          
           <div>
-            <label className="block text-sm font-medium mb-1">Cell Phone</label>
+            <label className="block text-sm font-medium text-gray-700">Cell Phone</label>
             <input
               type="tel"
-              name="primaryContact.cellPhone"
-              value={formData.primaryContact.cellPhone}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
-              required
+              value={formData.primary_contact.cell_phone}
+              onChange={(e) => handleInputChange('primary_contact', 'cell_phone', e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             />
           </div>
         </div>
       </div>
 
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold">Secondary Contact Information</h2>
+      {/* Secondary Contact */}
+      <div className="bg-white p-6 rounded-lg shadow">
+        <h2 className="text-xl font-bold mb-4">Secondary Contact</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Full Name</label>
+            <label className="block text-sm font-medium text-gray-700">Full Name</label>
             <input
               type="text"
-              name="secondaryContact.fullName"
-              value={formData.secondaryContact.fullName}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
-              required
+              value={formData.secondary_contact.full_name}
+              onChange={(e) => handleInputChange('secondary_contact', 'full_name', e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             />
           </div>
-          
           <div>
-            <label className="block text-sm font-medium mb-1">Title</label>
+            <label className="block text-sm font-medium text-gray-700">Title</label>
             <input
               type="text"
-              name="secondaryContact.title"
-              value={formData.secondaryContact.title}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
-              required
+              value={formData.secondary_contact.title}
+              onChange={(e) => handleInputChange('secondary_contact', 'title', e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             />
           </div>
-          
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700">Email</label>
             <input
               type="email"
-              name="secondaryContact.email"
-              value={formData.secondaryContact.email}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
-              required
+              value={formData.secondary_contact.email}
+              onChange={(e) => handleInputChange('secondary_contact', 'email', e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             />
           </div>
-          
           <div>
-            <label className="block text-sm font-medium mb-1">Office Phone</label>
+            <label className="block text-sm font-medium text-gray-700">Office Phone</label>
             <input
               type="tel"
-              name="secondaryContact.officePhone"
-              value={formData.secondaryContact.officePhone}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
-              required
+              value={formData.secondary_contact.office_phone}
+              onChange={(e) => handleInputChange('secondary_contact', 'office_phone', e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             />
           </div>
-          
           <div>
-            <label className="block text-sm font-medium mb-1">Cell Phone</label>
+            <label className="block text-sm font-medium text-gray-700">Cell Phone</label>
             <input
               type="tel"
-              name="secondaryContact.cellPhone"
-              value={formData.secondaryContact.cellPhone}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
-              required
+              value={formData.secondary_contact.cell_phone}
+              onChange={(e) => handleInputChange('secondary_contact', 'cell_phone', e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             />
           </div>
         </div>
       </div>
 
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
-      >
-        Submit School Information
-      </button>
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          disabled={saving}
+          className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 disabled:opacity-50"
+        >
+          {saving ? 'Saving...' : 'Save Changes'}
+        </button>
+      </div>
     </form>
   );
 } 
