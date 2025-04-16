@@ -1,6 +1,7 @@
 import ButtonAccount from "@/components/ButtonAccount";
 import SchoolInformationForm from "@/components/SchoolInformationForm";
 import {createClient} from "@/libs/supabase/server"
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +10,13 @@ export const dynamic = "force-dynamic";
 // See https://shipfa.st/docs/tutorials/private-page
 export default async function Dashboard() {
   const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("is_admin")
+    .eq("id", user?.id)
+    .single();
+  
   const { data: schools } = await supabase
     .from("schools")
     .select(`
@@ -20,11 +28,34 @@ export default async function Dashboard() {
   return (
     <main className="min-h-screen p-8 pb-24">
       <section className="max-w-4xl mx-auto space-y-8">
-        <ButtonAccount />
-        <h1 className="text-3xl md:text-4xl font-extrabold">School Registration</h1>
+        <div className="flex justify-between items-center">
+          <ButtonAccount />
+          {profile?.is_admin && (
+            <Link 
+              href="/admin"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Admin Dashboard
+            </Link>
+          )}
+        </div>
+        
+        <h1 className="text-3xl md:text-4xl font-extrabold">Customer Information</h1>
+        
+        {/* Temporary section to display user ID and admin status */}
+        {user && (
+          <div className="bg-yellow-100 p-4 rounded-lg">
+            <h2 className="font-bold mb-2">Your User ID (for admin setup):</h2>
+            <p className="font-mono bg-white p-2 rounded">{user.id}</p>
+            <p className="text-sm mt-2">Copy this ID to make yourself an admin in the SQL editor.</p>
+            <p className="text-sm mt-2">
+              Current admin status: {profile?.is_admin ? "✅ You are an admin" : "❌ You are not an admin"}
+            </p>
+          </div>
+        )}
         
         <div className="bg-white p-6 rounded-lg shadow">
-          {/* <h2 className="text-2xl font-bold mb-6">School Registration</h2> */}
+          <h2 className="text-2xl font-bold mb-6">School Registration</h2>
           <SchoolInformationForm />
         </div>
 
