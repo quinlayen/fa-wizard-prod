@@ -48,23 +48,30 @@ const Problem = () => {
     <section className="bg-[#003767] text-neutral-content">
       <div className="max-w-7xl mx-auto px-8 py-16 md:py-32 text-center">
         <h2 className="max-w-3xl mx-auto font-extrabold text-4xl md:text-5xl tracking-tight mb-6 md:mb-8">
-          70% of schools are non-compliant with Title IV.
+        “Achieving and Maintaining Compliance Can Be Overwhelming”
         </h2>
-        <p className="max-w-xl mx-auto text-lg opacity-90 leading-relaxed mb-12 md:mb-20">
-          Policy changes, schedule changes, human error... There&apos;s so much going
-          on.
+        <p className="max-w-5xl mx-auto text-lg opacity-90 leading-relaxed mb-12 md:mb-20 whitespace-pre-line">
+          If you own or operate a small school that participates in federal financial aid, you know there are an endless number of
+          regulatory requirements – from admissions, registrar, business office, and placement rules and disclosures - to
+          requirements for campus security, non-discrimination, violence against women, voter registration, information privacy,
+          vaccinations, drugs, alcohol, Constitution Day – the list goes on and on…
+
+          {'\n\n'}How does a small school manage it all? Even if you can keep up, you’ll need to spend hundreds of hours each year just
+          in maintenance – and as soon as you get caught up, the federal regulators will change the rules or add new ones…
+
+          {'\n\n'}<span className="text-[#FDB913]">The Solution? Automate it all with FA Wizard TM</span>
         </p>
 
         <div className="flex flex-col md:flex-row justify-center items-center md:items-start gap-6">
-          <Step emoji="📅" text="Missed Deadlines" />
+          <Step emoji="📅" text="Incomplete Policies, Missing Disclosures, or Missed Deadlines" />
 
           <Arrow extraStyle="max-md:-scale-x-100 md:-rotate-90" />
 
-          <Step emoji="⚠️" text="Compliance Issues" />
+          <Step emoji="⚠️" text="Audits, Reviews, or Student Complaints" />
 
           <Arrow extraStyle="md:-scale-x-100 md:-rotate-90" />
 
-          <Step emoji="💸" text="Financial Penalties" />
+          <Step emoji="💸" text="Financial Penalties - or School Sanctions/Closure" />
         </div>
       </div>
     </section>

@@ -23,13 +23,15 @@ const Hero = () => {
         </a> */}
 
         <h1 className="font-extrabold text-4xl lg:text-6xl tracking-tight md:-mb-4">
-          Stay Effortlessly Compliant with <span className="text-[#FDB913]">Title IV</span> Updates and 
-          Deadline Reminders.
+          The Compliance Solution for Small Independent Schools
+          Participating in <span className="text-[#FDB913]">Title IV</span> Financial Aid
         </h1>
 
         <p className="text-lg opacity-80 leading-relaxed">
-        FA Wizard™ provides comprehensive tools to simplify Title IV compliance, 
-        automate processes, and ensure your institution stays ahead of regulatory requirements.
+        FA Wizard™ is a revolutionary system that
+        creates, manages, and continuously updates your school’s Policies and
+        Procedures, Consumer Information Web Disclosures, and Compliance Calendar
+        accurately and affordably – even for the smallest schools.
         </p>
         {/* <ul className="mt-8 space-y-4">
           <li className="flex items-start">
@@ -75,8 +77,8 @@ const Hero = () => {
           <button className="btn btn-primary btn-wide">
             Get {config.appName}
           </button>
-          <p className="text-2xl font-bold text-[#003767] leading-tight font-oswald text-center">
-            Get the revolutionary FA Wizard™ system for only <span className="text-[#FDB913]">$299 / month!</span>
+          <p className="text-1xl font-bold text-[#003767] leading-tight font-oswald text-center">
+          <span className="text-[#FDB913]">Limited-Time Offer:</span> Get the revolutionary FA Wizard™ system for only <span className="text-[#FDB913]">$295 / month!</span>
           </p>
         </div>
       </div>

@@ -44,28 +44,29 @@ const config = {
           { name: "Say goodbye to compliance guesswork forever" },
         ],
       },
-      {
-        priceId:
-          process.env.NODE_ENV === "development"
-            ? "price_1RETMR04Oq5D44E3CWrw4gYq"
-            : "price_456",
-        // This plan will look different on the pricing page, it will be highlighted. You can only have one plan with isFeatured: true
-        isFeatured: false,
-        name: "FA Wizard™ Lite ",
-        description: "You need more power.  Look at our other one",
-        price: 199,
-        priceAnchor: 280,
-        features: [
-          {
-            name: "Instantly access 36+ prewritten federal policies",
-          },
-          { name: "Fully customizable Policy & Procedure Manual" },
-          { name: "Automated Consumer Information Disclosure website" },
-          { name: "Always-on access for students, staff, and regulators" },
-          { name: "Built to meet Title IV and Higher Ed Act standards" },
-          { name: "Say goodbye to compliance guesswork forever" },
-        ],
-      },
+      // Temporarily hiding FA Wizard Lite
+      // {
+      //   priceId:
+      //     process.env.NODE_ENV === "development"
+      //       ? "price_1RETMR04Oq5D44E3CWrw4gYq"
+      //       : "price_456",
+      //   // This plan will look different on the pricing page, it will be highlighted. You can only have one plan with isFeatured: true
+      //   isFeatured: false,
+      //   name: "FA Wizard™ Lite ",
+      //   description: "You need more power.  Look at our other one",
+      //   price: 199,
+      //   priceAnchor: 280,
+      //   features: [
+      //     {
+      //       name: "Instantly access 36+ prewritten federal policies",
+      //     },
+      //     { name: "Fully customizable Policy & Procedure Manual" },
+      //     { name: "Automated Consumer Information Disclosure website" },
+      //     { name: "Always-on access for students, staff, and regulators" },
+      //     { name: "Built to meet Title IV and Higher Ed Act standards" },
+      //     { name: "Say goodbye to compliance guesswork forever" },
+      //   ],
+      // },
     ],
   },
   aws: {

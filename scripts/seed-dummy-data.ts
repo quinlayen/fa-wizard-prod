@@ -68,7 +68,7 @@ async function seedDummyData() {
       const { error: profileError } = await supabase
         .from("profiles")
         .upsert(profile);
-      
+
       if (profileError) {
         console.error("Error inserting profile:", profileError);
       }
@@ -79,7 +79,7 @@ async function seedDummyData() {
       const { error: schoolError } = await supabase
         .from("schools")
         .upsert(school);
-      
+
       if (schoolError) {
         console.error("Error inserting school:", schoolError);
       }
