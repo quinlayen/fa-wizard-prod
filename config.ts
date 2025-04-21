@@ -32,7 +32,7 @@ const config = {
         // The price you want to display, the one user will be charged on Stripe.
         price: 295,
         // If you have an anchor price (i.e. $29) that you want to display crossed out, put it here. Otherwise, leave it empty
-        priceAnchor: 349,
+        priceAnchor: 395,
         features: [
           {
             name: "Instantly access 36+ prewritten federal policies",

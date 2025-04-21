@@ -12,7 +12,7 @@ const Pricing = () => {
         <div className="flex flex-col text-center w-full mb-20">
           <p className="font-medium text-primary mb-8 !text-[#FDB913]">Pricing</p>
           <h2 className="font-bold text-3xl lg:text-5xl tracking-tight">
-            Streamline Your Financial Aid Compliance with FA Wizard™
+            Revolutionize Your Financial Aid Compliance with FA Wizard™
           </h2>
         </div>
 
@@ -24,7 +24,7 @@ const Pricing = () => {
                   <span
                     className={`badge text-xs text-[#003767] font-semibold border-0 bg-[#FDB913]`}
                   >
-                    POPULAR
+                    SPECIAL OFFER
                   </span>
                 </div>
               )}
@@ -91,7 +91,10 @@ const Pricing = () => {
                 <div className="space-y-2">
                   <ButtonCheckout priceId={plan.priceId} />
                   <p className="text-sm text-center text-base-content/80 font-medium">
-                    *Special introductory rate guaranteed for twenty-four months. Regular price is $349/month. One-time set-up fee of $100 also applies. Use coupon code FAExperts2024 to receive this discounted rate.
+                    *Special introductory rate guaranteed for twenty-four months. Regular price is <s>$395</s>/month.
+                  </p>
+                  <p className="text-sm text-center text-base-content/80 font-medium">
+                    *One-time set-up fee of $100 also applies. Use coupon code FAExperts2025 to receive this discounted rate.
                   </p>
                 </div>
               </div>
