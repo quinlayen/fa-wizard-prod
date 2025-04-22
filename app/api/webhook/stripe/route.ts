@@ -42,68 +42,98 @@ export async function POST(req: NextRequest) {
   try {
     switch (eventType) {
       case "checkout.session.completed": {
+        console.log("Received checkout.session.completed event");
         // First payment is successful and a subscription is created (if mode was set to "subscription" in ButtonCheckout)
         // ✅ Grant access to the product
         const stripeObject: Stripe.Checkout.Session = event.data
           .object as Stripe.Checkout.Session;
 
         const session = await findCheckoutSession(stripeObject.id);
+        console.log("Session data:", {
+          customerId: session?.customer,
+          priceId: session?.line_items?.data[0]?.price.id,
+          userId: stripeObject.client_reference_id
+        });
 
         const customerId = session?.customer;
         const priceId = session?.line_items?.data[0]?.price.id;
         const userId = stripeObject.client_reference_id;
         const plan = configFile.stripe.plans.find((p) => p.priceId === priceId);
 
+        if (!plan) {
+          console.error("No matching plan found for priceId:", priceId);
+          break;
+        }
+
         const customer = (await stripe.customers.retrieve(
           customerId as string
         )) as Stripe.Customer;
-
-        if (!plan) break;
+        console.log("Customer data:", { email: customer.email });
 
         let user;
         if (!userId) {
           // check if user already exists
-          const { data: profile } = await supabase
+          const { data: profile, error: profileError } = await supabase
             .from("profiles")
             .select("*")
             .eq("email", customer.email)
             .single();
+          
+          if (profileError) {
+            console.error("Error finding profile by email:", profileError);
+          }
+          
           if (profile) {
             user = profile;
+            console.log("Found existing user by email:", user.id);
           } else {
             // create a new user using supabase auth admin
-            const { data } = await supabase.auth.admin.createUser({
+            const { data, error: createError } = await supabase.auth.admin.createUser({
               email: customer.email,
             });
 
+            if (createError) {
+              console.error("Error creating user:", createError);
+            }
+
             user = data?.user;
+            console.log("Created new user:", user?.id);
           }
         } else {
           // find user by ID
-          const { data: profile } = await supabase
+          const { data: profile, error: profileError } = await supabase
             .from("profiles")
             .select("*")
             .eq("id", userId)
             .single();
 
+          if (profileError) {
+            console.error("Error finding profile by ID:", profileError);
+          }
+
           user = profile;
+          console.log("Found user by ID:", user?.id);
         }
 
-        await supabase
+        if (!user?.id) {
+          console.error("No user ID found, cannot update profile");
+          break;
+        }
+
+        const { error: updateError } = await supabase
           .from("profiles")
           .update({
             customer_id: customerId,
             price_id: priceId,
-            has_access: true,
+            is_subscribed: true
           })
-          .eq("id", user?.id);
+          .eq("id", user.id);
 
-        // Extra: send email with user link, product page, etc...
-        // try {
-        //   await sendEmail(...);
-        // } catch (e) {
-        //   console.error("Email issue:" + e?.message);
-        // }
+        if (updateError) {
+          console.error("Error updating profile:", updateError);
+        } else {
+          console.log("Successfully updated profile with subscription status");
+        }
 
         break;
       }
@@ -132,7 +162,7 @@ export async function POST(req: NextRequest) {
 
         await supabase
           .from("profiles")
-          .update({ has_access: false })
+          .update({ is_subscribed: false })
           .eq("customer_id", subscription.customer);
         break;
       }
@@ -155,10 +185,10 @@ export async function POST(req: NextRequest) {
         // Make sure the invoice is for the same plan (priceId) the user subscribed to
         if (profile.price_id !== priceId) break;
 
-        // Grant the profile access to your product. It's a boolean in the database, but could be a number of credits, etc...
+        // Grant the profile access to your product
         await supabase
           .from("profiles")
-          .update({ has_access: true })
+          .update({ is_subscribed: true })
           .eq("customer_id", customerId);
 
         break;
