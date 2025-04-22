@@ -171,6 +171,7 @@ export default function Dashboard() {
                             <p><span className="font-semibold">City:</span> {school.city}</p>
                             <p><span className="font-semibold">State:</span> {school.state}</p>
                             <p><span className="font-semibold">ZIP Code:</span> {school.zip_code}</p>
+                            <p><span className="font-semibold">Last Updated:</span> {new Date(school.updated_at).toLocaleString()}</p>
                           </div>
                         </div>
                         <div>

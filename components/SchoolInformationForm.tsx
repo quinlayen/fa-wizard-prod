@@ -192,79 +192,9 @@ export default function SchoolInformationForm({ school, onCancel, onSuccess }: S
         console.log('Updating existing school:', school);
         console.log('Form data:', formData);
 
-        // Verify contact IDs exist in the database
-        console.log('Verifying primary contact ID in database:', school.primary_contact_id);
-        const { data: primaryContactCheck, error: primaryCheckError } = await supabase
-          .from('contacts')
-          .select('id')
-          .eq('id', school.primary_contact_id)
-          .single();
-
-        if (primaryCheckError || !primaryContactCheck) {
-          console.error('Primary contact ID does not exist:', primaryCheckError);
-          throw new Error('Primary contact ID does not exist');
-        }
-
-        console.log('Verifying secondary contact ID in database:', school.secondary_contact_id);
-        const { data: secondaryContactCheck, error: secondaryCheckError } = await supabase
-          .from('contacts')
-          .select('id')
-          .eq('id', school.secondary_contact_id)
-          .single();
-
-        if (secondaryCheckError || !secondaryContactCheck) {
-          console.error('Secondary contact ID does not exist:', secondaryCheckError);
-          throw new Error('Secondary contact ID does not exist');
-        }
-
-        // Validate form data
-        if (!formData.full_school_name || !formData.short_school_name) {
-          console.error('Invalid form data:', formData);
-          throw new Error('Invalid form data');
-        }
-
-        // Update existing school
-        // First, update primary contact
-        console.log('Updating primary contact with ID:', school.primary_contact_id);
-        const { error: primaryError } = await supabase
-          .from('contacts')
-          .update({
-            full_name: formData.primary_contact.full_name,
-            title: formData.primary_contact.title,
-            email: formData.primary_contact.email,
-            office_phone: formData.primary_contact.office_phone,
-            cell_phone: formData.primary_contact.cell_phone,
-          })
-          .eq('id', school.primary_contact_id);
-
-        if (primaryError) {
-          console.error('Error updating primary contact:', primaryError);
-          throw primaryError;
-        }
-        console.log('Primary contact updated successfully');
-
-        // Then, update secondary contact
-        console.log('Updating secondary contact with ID:', school.secondary_contact_id);
-        const { error: secondaryError } = await supabase
-          .from('contacts')
-          .update({
-            full_name: formData.secondary_contact.full_name,
-            title: formData.secondary_contact.title,
-            email: formData.secondary_contact.email,
-            office_phone: formData.secondary_contact.office_phone,
-            cell_phone: formData.secondary_contact.cell_phone,
-          })
-          .eq('id', school.secondary_contact_id);
-
-        if (secondaryError) {
-          console.error('Error updating secondary contact:', secondaryError);
-          throw secondaryError;
-        }
-        console.log('Secondary contact updated successfully');
-
-        // Finally, update school
-        console.log('Updating school with ID:', school.id);
-        const { error: schoolError } = await supabase
+        // Update school information
+        console.log('Attempting to update school with ID:', school.id);
+        const { data: schoolUpdateData, error: schoolError } = await supabase
           .from('schools')
           .update({
             full_school_name: formData.full_school_name,
@@ -275,25 +205,84 @@ export default function SchoolInformationForm({ school, onCancel, onSuccess }: S
             zip_code: formData.zip_code,
             updated_at: new Date().toISOString()
           })
-          .eq('id', school.id);
+          .eq('id', school.id)
+          .select();
 
+        console.log('School update response:', { data: schoolUpdateData, error: schoolError });
         if (schoolError) {
           console.error('Error updating school:', schoolError);
           throw schoolError;
         }
-        console.log('School information updated successfully');
-        
-        toast.success('School information updated successfully!');
-        if (onSuccess) {
-          console.log('Calling onSuccess callback');
-          onSuccess();
+
+        // Update primary contact
+        console.log('Attempting to update primary contact with ID:', school.primary_contact_id);
+        const { data: primaryUpdateData, error: primaryError } = await supabase
+          .from('contacts')
+          .update({
+            full_name: formData.primary_contact.full_name,
+            title: formData.primary_contact.title,
+            email: formData.primary_contact.email,
+            office_phone: formData.primary_contact.office_phone,
+            cell_phone: formData.primary_contact.cell_phone,
+          })
+          .eq('id', school.primary_contact_id)
+          .select();
+
+        console.log('Primary contact update response:', { data: primaryUpdateData, error: primaryError });
+        if (primaryError) {
+          console.error('Error updating primary contact:', primaryError);
+          throw primaryError;
         }
+
+        // Update secondary contact
+        console.log('Attempting to update secondary contact with ID:', school.secondary_contact_id);
+        const { data: secondaryUpdateData, error: secondaryError } = await supabase
+          .from('contacts')
+          .update({
+            full_name: formData.secondary_contact.full_name,
+            title: formData.secondary_contact.title,
+            email: formData.secondary_contact.email,
+            office_phone: formData.secondary_contact.office_phone,
+            cell_phone: formData.secondary_contact.cell_phone,
+          })
+          .eq('id', school.secondary_contact_id)
+          .select();
+
+        console.log('Secondary contact update response:', { data: secondaryUpdateData, error: secondaryError });
+        if (secondaryError) {
+          console.error('Error updating secondary contact:', secondaryError);
+          throw secondaryError;
+        }
+
+        // Verify the updates
+        console.log('Verifying updates...');
+        const { data: verifyData, error: verifyError } = await supabase
+          .from('schools')
+          .select(`
+            *,
+            primary_contact:primary_contact_id(*),
+            secondary_contact:secondary_contact_id(*),
+            updated_at
+          `)
+          .eq('id', school.id)
+          .single();
+
+        console.log('Verification data:', verifyData);
+        if (verifyError) {
+          console.error('Error verifying updates:', verifyError);
+          throw verifyError;
+        }
+
+        toast.success('School information updated successfully!');
+        if (onSuccess) onSuccess();
         if (onCancel) onCancel();
       } else {
-        // First, create or update the primary contact
+        // Register new school
+        console.log('Registering new school...');
+        // First, create primary contact
         const { data: primaryContact, error: primaryError } = await supabase
           .from('contacts')
-          .upsert({
+          .insert({
             full_name: formData.primary_contact.full_name,
             title: formData.primary_contact.title,
             email: formData.primary_contact.email,
@@ -303,12 +292,13 @@ export default function SchoolInformationForm({ school, onCancel, onSuccess }: S
           .select()
           .single();
 
+        console.log('Primary contact creation response:', { data: primaryContact, error: primaryError });
         if (primaryError) throw primaryError;
 
-        // Then, create or update the secondary contact
+        // Then, create secondary contact
         const { data: secondaryContact, error: secondaryError } = await supabase
           .from('contacts')
-          .upsert({
+          .insert({
             full_name: formData.secondary_contact.full_name,
             title: formData.secondary_contact.title,
             email: formData.secondary_contact.email,
@@ -318,12 +308,13 @@ export default function SchoolInformationForm({ school, onCancel, onSuccess }: S
           .select()
           .single();
 
+        console.log('Secondary contact creation response:', { data: secondaryContact, error: secondaryError });
         if (secondaryError) throw secondaryError;
 
-        // Finally, create or update the school record
-        const { error: schoolError } = await supabase
+        // Finally, create the school record
+        const { data: newSchool, error: schoolError } = await supabase
           .from('schools')
-          .upsert({
+          .insert({
             user_id: user.id,
             full_school_name: formData.full_school_name,
             short_school_name: formData.short_school_name,
@@ -333,8 +324,11 @@ export default function SchoolInformationForm({ school, onCancel, onSuccess }: S
             zip_code: formData.zip_code,
             primary_contact_id: primaryContact.id,
             secondary_contact_id: secondaryContact.id,
-          });
+          })
+          .select()
+          .single();
 
+        console.log('School creation response:', { data: newSchool, error: schoolError });
         if (schoolError) throw schoolError;
 
         toast.success('School information saved successfully!');
