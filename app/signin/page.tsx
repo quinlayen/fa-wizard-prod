@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/libs/supabase/client";
 import { Provider } from "@supabase/supabase-js";
 import toast from "react-hot-toast";
@@ -12,8 +12,33 @@ import config from "@/config";
 export default function Login() {
   const supabase = createClient();
   const [email, setEmail] = useState<string>("");
+  const [fullName, setFullName] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const [isNewUser, setIsNewUser] = useState<boolean>(false);
+
+  // Check if user exists when email is entered
+  useEffect(() => {
+    const checkUser = async () => {
+      if (!email) return;
+      
+      try {
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('email', email)
+          .single();
+        
+        setIsNewUser(!profiles);
+      } catch (error) {
+        console.log('Error checking user:', error);
+        setIsNewUser(true);
+      }
+    };
+
+    checkUser();
+  }, [email, supabase]);
 
   const handleSignup = async (
     e: any,
@@ -23,6 +48,12 @@ export default function Login() {
     }
   ) => {
     e?.preventDefault();
+
+    // Validate required fields for new users
+    if (isNewUser && (!fullName || !phone)) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
 
     setIsLoading(true);
 
@@ -35,29 +66,26 @@ export default function Login() {
         ? `${currentUrl}/api/auth/callback`
         : `https://www.fawizard.com/api/auth/callback`;
 
-      // Temporarily disabled Google sign-in
-      // if (type === "oauth") {
-      //   await supabase.auth.signInWithOAuth({
-      //     provider,
-      //     options: {
-      //       redirectTo: redirectURL,
-      //     },
-      //   });
-      // } else if (type === "magic_link") {
       if (type === "magic_link") {
-        await supabase.auth.signInWithOtp({
+        const { error: signInError } = await supabase.auth.signInWithOtp({
           email,
           options: {
             emailRedirectTo: redirectURL,
+            data: {
+              full_name: fullName,
+              phone: phone
+            }
           },
         });
 
-        toast.success("Check your emails!");
+        if (signInError) throw signInError;
 
+        toast.success("Check your emails!");
         setIsDisabled(true);
       }
     } catch (error) {
       console.log(error);
+      toast.error("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -142,6 +170,30 @@ export default function Login() {
             className="input input-bordered w-full placeholder:opacity-60"
             onChange={(e) => setEmail(e.target.value)}
           />
+
+          {isNewUser && (
+            <>
+              <input
+                required
+                type="text"
+                value={fullName}
+                autoComplete="name"
+                placeholder="Full Name"
+                className="input input-bordered w-full placeholder:opacity-60"
+                onChange={(e) => setFullName(e.target.value)}
+              />
+
+              <input
+                required
+                type="tel"
+                value={phone}
+                autoComplete="tel"
+                placeholder="Phone Number"
+                className="input input-bordered w-full placeholder:opacity-60"
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </>
+          )}
 
           <button
             className="btn btn-primary btn-block"
