@@ -32,8 +32,9 @@ export async function GET(request: Request) {
           .upsert({
             id: session.user.id,
             email: session.user.email,
-            full_name: metadata?.full_name,
-            phone: metadata?.phone,
+            first_name: metadata?.first_name || '',
+            last_name: metadata?.last_name || '',
+            phone: metadata?.phone || '',
             updated_at: new Date().toISOString(),
           }, {
             onConflict: 'id',
