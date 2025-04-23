@@ -33,28 +33,7 @@ export default function SchoolInformationForm() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [hasSchool, setHasSchool] = useState(false);
-  const [formData, setFormData] = useState<SchoolFormData>(school ? {
-    full_school_name: school.full_school_name || '',
-    short_school_name: school.short_school_name || '',
-    street_address: school.street_address || '',
-    city: school.city || '',
-    state: school.state || '',
-    zip_code: school.zip_code || '',
-    primary_contact: {
-      full_name: school.primary_contact?.full_name || '',
-      title: school.primary_contact?.title || '',
-      email: school.primary_contact?.email || '',
-      office_phone: school.primary_contact?.office_phone || '',
-      cell_phone: school.primary_contact?.cell_phone || '',
-    },
-    secondary_contact: {
-      full_name: school.secondary_contact?.full_name || '',
-      title: school.secondary_contact?.title || '',
-      email: school.secondary_contact?.email || '',
-      office_phone: school.secondary_contact?.office_phone || '',
-      cell_phone: school.secondary_contact?.cell_phone || '',
-    },
-  } : {
+  const [formData, setFormData] = useState<SchoolFormData>({
     full_school_name: '',
     short_school_name: '',
     street_address: '',
