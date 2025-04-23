@@ -59,7 +59,7 @@ const Problem = () => {
           {'\n\n'}How does a small school manage it all? Even if you can keep up, you’ll need to spend hundreds of hours each year just
           in maintenance – and as soon as you get caught up, the federal regulators will change the rules or add new ones…
 
-          {'\n\n'}<span className="text-[#FDB913]">The Solution? Automate it all with FA Wizard TM</span>
+          {'\n\n'}<span className="text-[#FDB913]">The Solution? Automate it all with FA Wizard™</span>
         </p>
 
         <div className="flex flex-col md:flex-row justify-center items-center md:items-start gap-6">

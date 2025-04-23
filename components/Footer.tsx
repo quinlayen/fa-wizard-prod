@@ -22,21 +22,21 @@ const Footer = () => {
               <Image
                 src={logo}
                 alt={`${config.appName} logo`}
-                className="w-48"
+                className="w-62"
                 placeholder="blur"
                 priority={true}
-                width={192}
-                height={192}
+                width={245}
+                height={245}
               />
             </Link>
 
-            <p className="mt-3 text-sm text-base-content/80">
+            {/* <p className="mt-3 text-sm text-base-content/80">
               {config.appDescription}
-            </p>
+            </p> */}
           </div>
 
           <div className="flex-grow flex flex-wrap justify-center -mb-10 md:mt-0 mt-10 text-center">
-            <div className="lg:w-1/3 md:w-1/2 w-full px-4">
+            {/* <div className="lg:w-1/3 md:w-1/2 w-full px-4">
               <div className="footer-title font-semibold text-base-content tracking-widest text-sm md:text-left mb-3">
                 LINKS
               </div>
@@ -61,8 +61,8 @@ const Footer = () => {
                 {/* <a href="/#" target="_blank" className="link link-hover">
                   Affiliates
                 </a> */}
-              </div>
-            </div>
+              {/* </div> */}
+            {/* </div> */} 
 
             <div className="lg:w-1/3 md:w-1/2 w-full px-4">
               <div className="footer-title font-semibold text-base-content tracking-widest text-sm md:text-left mb-3">
@@ -98,7 +98,7 @@ const Footer = () => {
             
 
             <p className="mt-3 text-sm text-base-content/80">
-            FA Wizard™ is a product of Financial Aid Experts, Inc.
+            <i><strong>FA Wizard™ is a product of Financial Aid Experts, Inc.</strong></i>
             </p>
           </div>
         </div>
