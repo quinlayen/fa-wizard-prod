@@ -28,7 +28,12 @@ export default function Login() {
 
     try {
       const { type, provider } = options;
-      const redirectURL = `${window.location.origin}/api/auth/callback`;
+      // Use the current URL for redirects, but ensure we're using the correct domain
+      const currentUrl = window.location.origin;
+      const isLocalhost = currentUrl.includes('localhost');
+      const redirectURL = isLocalhost 
+        ? `${currentUrl}/api/auth/callback`
+        : `https://www.fawizard.com/api/auth/callback`;
 
       if (type === "oauth") {
         await supabase.auth.signInWithOAuth({
