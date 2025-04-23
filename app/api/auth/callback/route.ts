@@ -15,5 +15,9 @@ export async function GET(req: NextRequest) {
   }
 
   // URL to redirect to after sign in process completes
-  return NextResponse.redirect(requestUrl.origin + config.auth.callbackUrl);
+  const redirectUrl = process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3000/dashboard'
+    : config.auth.callbackUrl;
+
+  return NextResponse.redirect(redirectUrl);
 }
