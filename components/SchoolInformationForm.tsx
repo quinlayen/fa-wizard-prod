@@ -32,7 +32,29 @@ export default function SchoolInformationForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [formData, setFormData] = useState<SchoolFormData>({
+  const [hasSchool, setHasSchool] = useState(false);
+  const [formData, setFormData] = useState<SchoolFormData>(school ? {
+    full_school_name: school.full_school_name || '',
+    short_school_name: school.short_school_name || '',
+    street_address: school.street_address || '',
+    city: school.city || '',
+    state: school.state || '',
+    zip_code: school.zip_code || '',
+    primary_contact: {
+      full_name: school.primary_contact?.full_name || '',
+      title: school.primary_contact?.title || '',
+      email: school.primary_contact?.email || '',
+      office_phone: school.primary_contact?.office_phone || '',
+      cell_phone: school.primary_contact?.cell_phone || '',
+    },
+    secondary_contact: {
+      full_name: school.secondary_contact?.full_name || '',
+      title: school.secondary_contact?.title || '',
+      email: school.secondary_contact?.email || '',
+      office_phone: school.secondary_contact?.office_phone || '',
+      cell_phone: school.secondary_contact?.cell_phone || '',
+    },
+  } : {
     full_school_name: '',
     short_school_name: '',
     street_address: '',
@@ -73,31 +95,15 @@ export default function SchoolInformationForm() {
           .eq('user_id', user.id)
           .single();
 
-        if (error) throw error;
-
-        if (school) {
-          setFormData({
-            full_school_name: school.full_school_name || '',
-            short_school_name: school.short_school_name || '',
-            street_address: school.street_address || '',
-            city: school.city || '',
-            state: school.state || '',
-            zip_code: school.zip_code || '',
-            primary_contact: {
-              full_name: school.primary_contact?.full_name || '',
-              title: school.primary_contact?.title || '',
-              email: school.primary_contact?.email || '',
-              office_phone: school.primary_contact?.office_phone || '',
-              cell_phone: school.primary_contact?.cell_phone || '',
-            },
-            secondary_contact: {
-              full_name: school.secondary_contact?.full_name || '',
-              title: school.secondary_contact?.title || '',
-              email: school.secondary_contact?.email || '',
-              office_phone: school.secondary_contact?.office_phone || '',
-              cell_phone: school.secondary_contact?.cell_phone || '',
-            },
-          });
+        if (error) {
+          if (error.code === 'PGRST116') {
+            // No school found, this is expected for new users
+            setHasSchool(false);
+          } else {
+            throw error;
+          }
+        } else if (school) {
+          setHasSchool(true);
         }
       } catch (error) {
         console.error('Error fetching school data:', error);
@@ -133,10 +139,16 @@ export default function SchoolInformationForm() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('No user found');
 
-      // First, create or update the primary contact
+      if (hasSchool) {
+        toast.error('You can only register one school. Updates are temporarily disabled.');
+        return;
+      }
+
+      // Register new school
+      // First, create primary contact
       const { data: primaryContact, error: primaryError } = await supabase
         .from('contacts')
-        .upsert({
+        .insert({
           full_name: formData.primary_contact.full_name,
           title: formData.primary_contact.title,
           email: formData.primary_contact.email,
@@ -148,10 +160,10 @@ export default function SchoolInformationForm() {
 
       if (primaryError) throw primaryError;
 
-      // Then, create or update the secondary contact
+      // Then, create secondary contact
       const { data: secondaryContact, error: secondaryError } = await supabase
         .from('contacts')
-        .upsert({
+        .insert({
           full_name: formData.secondary_contact.full_name,
           title: formData.secondary_contact.title,
           email: formData.secondary_contact.email,
@@ -163,10 +175,10 @@ export default function SchoolInformationForm() {
 
       if (secondaryError) throw secondaryError;
 
-      // Finally, create or update the school record
+      // Finally, create the school record
       const { error: schoolError } = await supabase
         .from('schools')
-        .upsert({
+        .insert({
           user_id: user.id,
           full_school_name: formData.full_school_name,
           short_school_name: formData.short_school_name,
@@ -192,6 +204,15 @@ export default function SchoolInformationForm() {
 
   if (loading) {
     return <div className="text-center py-8">Loading school information...</div>;
+  }
+
+  if (hasSchool) {
+    return (
+      <div className="text-center py-8">
+        <h2 className="text-xl font-bold mb-4">School Information</h2>
+        <p className="text-gray-600">You have already registered a school. Updates are temporarily disabled.</p>
+      </div>
+    );
   }
 
   return (
@@ -374,10 +395,10 @@ export default function SchoolInformationForm() {
       <div className="flex justify-end">
         <button
           type="submit"
-          disabled={saving}
+          disabled={saving || hasSchool}
           className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 disabled:opacity-50"
         >
-          {saving ? 'Saving...' : 'Save Changes'}
+          {saving ? 'Saving...' : 'Register School'}
         </button>
       </div>
     </form>

@@ -13,22 +13,10 @@ export default function SubscribeForm() {
   const handleSubscriptionSuccess = async () => {
     setLoading(true);
     try {
-      // Get the current user
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('No user found');
-
-      // Update the user's subscription status
-      const { error } = await supabase
-        .from('profiles')
-        .update({ is_subscribed: true })
-        .eq('id', user.id);
-
-      if (error) throw error;
-
-      // Refresh the page to show the updated content
-      window.location.reload();
+      // Redirect to the dashboard
+      window.location.href = '/dashboard';
     } catch (error) {
-      console.error('Error updating subscription status:', error);
+      console.error('Error redirecting to dashboard:', error);
     } finally {
       setLoading(false);
     }
