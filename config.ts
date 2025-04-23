@@ -23,7 +23,7 @@ const config = {
         priceId:
           process.env.NODE_ENV === "development"
             ? "price_1RETMR04Oq5D44E3CWrw4gYq"
-            : "price_456",
+            : "price_1RETMR04Oq5D44E3CWrw4gYq",
         //  REQUIRED - Name of the plan, displayed on the pricing page
         name: "FA Wizard™",
         isFeatured: true,
