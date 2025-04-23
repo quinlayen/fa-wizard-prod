@@ -19,7 +19,7 @@ export default function Login() {
     e: any,
     options: {
       type: string;
-      provider?: Provider;
+      // provider?: Provider; // Temporarily disabled Google sign-in
     }
   ) => {
     e?.preventDefault();
@@ -27,7 +27,7 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const { type, provider } = options;
+      const { type } = options;
       // Use the current URL for redirects, but ensure we're using the correct domain
       const currentUrl = window.location.origin;
       const isLocalhost = currentUrl.includes('localhost');
@@ -35,14 +35,16 @@ export default function Login() {
         ? `${currentUrl}/api/auth/callback`
         : `https://www.fawizard.com/api/auth/callback`;
 
-      if (type === "oauth") {
-        await supabase.auth.signInWithOAuth({
-          provider,
-          options: {
-            redirectTo: redirectURL,
-          },
-        });
-      } else if (type === "magic_link") {
+      // Temporarily disabled Google sign-in
+      // if (type === "oauth") {
+      //   await supabase.auth.signInWithOAuth({
+      //     provider,
+      //     options: {
+      //       redirectTo: redirectURL,
+      //     },
+      //   });
+      // } else if (type === "magic_link") {
+      if (type === "magic_link") {
         await supabase.auth.signInWithOtp({
           email,
           options: {
@@ -85,6 +87,7 @@ export default function Login() {
       </h1>
 
       <div className="space-y-8 max-w-xl mx-auto">
+        {/* Temporarily disabled Google sign-in
         <button
           className="btn btn-block"
           onClick={(e) =>
@@ -124,6 +127,7 @@ export default function Login() {
         <div className="divider text-xs text-base-content/50 font-medium">
           OR
         </div>
+        */}
 
         <form
           className="form-control w-full space-y-4"

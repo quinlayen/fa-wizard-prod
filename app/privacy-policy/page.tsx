@@ -94,10 +94,10 @@ FA Wizard™ does not knowingly collect or store personal information from child
 We may update this Privacy Policy from time to time. When we do, we will notify you by email. Continued use of the website after any updates indicates your acceptance of the revised policy.
 
 ⸻
-6. Contact Us
+// 6. Contact Us
 
-If you have any questions or concerns about this Privacy Policy, please contact us at:
-📧 david.canaski@faexperts.com
+// If you have any questions or concerns about this Privacy Policy, please contact us at:
+// 📧 david.canaski@faexperts.com
 
 ⸻
 Thank you for trusting FA Wizard™.`}
