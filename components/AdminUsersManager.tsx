@@ -2,10 +2,14 @@
 
 import { createClient } from "@/libs/supabase/client";
 import { useEffect, useState } from "react";
+import { CSVLink } from "react-csv";
 
 interface UserProfile {
   id: string;
   email: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
   is_admin: boolean;
   is_subscribed: boolean;
   created_at: string;
@@ -29,6 +33,9 @@ export default function AdminUsersManager() {
           .select(`
             id,
             email,
+            first_name,
+            last_name,
+            phone,
             is_admin,
             is_subscribed,
             created_at
@@ -103,6 +110,19 @@ export default function AdminUsersManager() {
     }
   };
 
+  const prepareCSVData = () => {
+    return users.map(user => ({
+      "Email": user.email,
+      "First Name": user.first_name || "Not provided",
+      "Last Name": user.last_name || "Not provided",
+      "Phone": user.phone || "Not provided",
+      "Admin Status": user.is_admin ? "Yes" : "No",
+      "Subscription Status": user.is_subscribed ? "Active" : "Inactive",
+      "Schools Registered": user.school_count,
+      "Join Date": new Date(user.created_at).toLocaleDateString()
+    }));
+  };
+
   if (loading) {
     return <div className="text-center py-8">Loading users...</div>;
   }
@@ -115,8 +135,17 @@ export default function AdminUsersManager() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">User Management</h2>
-        <div className="text-sm text-gray-500">
-          Total Users: {users.length}
+        <div className="flex items-center gap-4">
+          <div className="text-sm text-gray-500">
+            Total Users: {users.length}
+          </div>
+          <CSVLink
+            data={prepareCSVData()}
+            filename="users.csv"
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Export to CSV
+          </CSVLink>
         </div>
       </div>
 
@@ -125,6 +154,8 @@ export default function AdminUsersManager() {
           <thead>
             <tr className="bg-gray-50">
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Admin</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subscribed</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Schools</th>
@@ -135,6 +166,15 @@ export default function AdminUsersManager() {
             {users.map((user) => (
               <tr key={user.id}>
                 <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {user.first_name && user.last_name 
+                    ? `${user.first_name} ${user.last_name}`
+                    : <span className="text-gray-400">Not provided</span>
+                  }
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {user.phone || <span className="text-gray-400">Not provided</span>}
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <button
                     onClick={() => toggleAdminStatus(user.id, user.is_admin)}
