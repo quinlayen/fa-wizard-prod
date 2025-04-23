@@ -77,12 +77,19 @@ export default function AdminUsersManager() {
 
   const toggleAdminStatus = async (userId: string, currentStatus: boolean) => {
     try {
-      const { error } = await supabase
+      console.log("Updating admin status for user:", userId, "to:", !currentStatus);
+      
+      const { data, error } = await supabase
         .from("profiles")
         .update({ is_admin: !currentStatus })
         .eq("id", userId);
 
-      if (error) throw error;
+      console.log("Update response:", { data, error });
+
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
 
       // Update local state
       setUsers(users.map(user => 
@@ -91,6 +98,7 @@ export default function AdminUsersManager() {
           : user
       ));
     } catch (err) {
+      console.error("Error updating admin status:", err);
       setError(err instanceof Error ? err.message : "Failed to update admin status");
     }
   };
