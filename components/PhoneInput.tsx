@@ -1,10 +1,10 @@
 import { ChangeEvent } from 'react';
 
 interface PhoneInputProps {
-  value: string;
   onChange: (value: string) => void;
   required?: boolean;
   disabled?: boolean;
+  value: string;
 }
 
 export default function PhoneInput({ value, onChange, required = false, disabled = false }: PhoneInputProps) {

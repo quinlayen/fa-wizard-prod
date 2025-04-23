@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { createClient } from "@/libs/supabase/client";
 import toast from "react-hot-toast";
 import config from "@/config";
@@ -18,53 +18,8 @@ export default function Login() {
   const [phone, setPhone] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
-  const [userExists, setUserExists] = useState<boolean | null>(null);
 
-  // Check if user exists when email is entered and blurred
-  const checkUserExists = async (email: string) => {
-    if (!email) return;
-    
-    try {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', email)
-        .single();
-      
-      setUserExists(!!profile);
-      
-      // If user exists and trying to sign up, or doesn't exist and trying to sign in
-      if ((!!profile && isSignUp) || (!profile && !isSignUp)) {
-        setIsSignUp(!isSignUp);
-        toast.error(profile ? 'Email already registered. Please sign in.' : 'Email not found. Please sign up.');
-      }
-    } catch (error) {
-      console.log('Error checking user:', error);
-      setUserExists(null);
-    }
-  };
-
-  const validateForm = () => {
-    if (!email) {
-      toast.error('Email is required');
-      return false;
-    }
-
-    if (isSignUp) {
-      if (!firstName || !lastName) {
-        toast.error('First and last name are required');
-        return false;
-      }
-      if (!phone || !/^\(\d{3}\) \d{3}-\d{4}$/.test(phone)) {
-        toast.error('Valid phone number is required');
-        return false;
-      }
-    }
-
-    return true;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!validateForm()) return;
@@ -121,6 +76,26 @@ export default function Login() {
     }
   };
 
+  const validateForm = () => {
+    if (!email) {
+      toast.error('Email is required');
+      return false;
+    }
+
+    if (isSignUp) {
+      if (!firstName || !lastName) {
+        toast.error('First and last name are required');
+        return false;
+      }
+      if (!phone || !/^\(\d{3}\) \d{3}-\d{4}$/.test(phone)) {
+        toast.error('Valid phone number is required');
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   return (
     <main className="p-8 md:p-24" data-theme={config.colors.theme}>
       <div className="text-center mb-4">
@@ -160,7 +135,6 @@ export default function Login() {
             placeholder="Email address"
             className="input input-bordered w-full placeholder:opacity-60"
             onChange={(e) => setEmail(e.target.value)}
-            onBlur={() => checkUserExists(email)}
           />
 
           {isSignUp && (
