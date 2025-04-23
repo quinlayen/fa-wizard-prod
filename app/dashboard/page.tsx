@@ -120,7 +120,7 @@ export default function Dashboard() {
         </h1>
         
         {/* Temporary section to display user ID and admin status */}
-        {user && (
+        {/* {user && (
           <div className="bg-yellow-100 p-4 rounded-lg">
             <h2 className="font-bold mb-2">Your User ID (for admin setup):</h2>
             <p className="font-mono bg-white p-2 rounded">{user.id}</p>
@@ -132,7 +132,7 @@ export default function Dashboard() {
               Subscription status: {profile?.is_subscribed ? "✅ You are subscribed" : "❌ You are not subscribed"}
             </p>
           </div>
-        )}
+        )} */}
         
         {profile?.is_subscribed ? (
           <>
