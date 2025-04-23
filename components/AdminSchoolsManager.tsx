@@ -96,12 +96,12 @@ export default function AdminSchoolsManager() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h3 className="text-xl font-bold mb-2">{school.full_school_name}</h3>
-                <p className="text-gray-600 mb-4">{school.short_school_name}</p>
                 <div className="space-y-2">
-                  <p>{school.street_address}</p>
-                  <p>
-                    {school.city}, {school.state} {school.zip_code}
-                  </p>
+                  <p><span className="font-medium">Short Name:</span> {school.short_school_name}</p>
+                  <p><span className="font-medium">Address:</span> {school.street_address}</p>
+                  <p><span className="font-medium">City:</span> {school.city}</p>
+                  <p><span className="font-medium">State:</span> {school.state}</p>
+                  <p><span className="font-medium">ZIP Code:</span> {school.zip_code}</p>
                 </div>
               </div>
 
@@ -109,22 +109,22 @@ export default function AdminSchoolsManager() {
                 <div>
                   <h4 className="font-semibold mb-2">Primary Contact</h4>
                   <div className="space-y-1">
-                    <p>{school.primary_contact.full_name}</p>
-                    <p className="text-gray-600">{school.primary_contact.title}</p>
-                    <p>{school.primary_contact.email}</p>
-                    <p>Office: {school.primary_contact.office_phone}</p>
-                    <p>Cell: {school.primary_contact.cell_phone}</p>
+                    <p><span className="font-medium">Name:</span> {school.primary_contact.full_name}</p>
+                    <p><span className="font-medium">Title:</span> {school.primary_contact.title}</p>
+                    <p><span className="font-medium">Email:</span> {school.primary_contact.email}</p>
+                    <p><span className="font-medium">Office Phone:</span> {school.primary_contact.office_phone}</p>
+                    <p><span className="font-medium">Cell Phone:</span> {school.primary_contact.cell_phone}</p>
                   </div>
                 </div>
 
                 <div>
                   <h4 className="font-semibold mb-2">Secondary Contact</h4>
                   <div className="space-y-1">
-                    <p>{school.secondary_contact.full_name}</p>
-                    <p className="text-gray-600">{school.secondary_contact.title}</p>
-                    <p>{school.secondary_contact.email}</p>
-                    <p>Office: {school.secondary_contact.office_phone}</p>
-                    <p>Cell: {school.secondary_contact.cell_phone}</p>
+                    <p><span className="font-medium">Name:</span> {school.secondary_contact.full_name}</p>
+                    <p><span className="font-medium">Title:</span> {school.secondary_contact.title}</p>
+                    <p><span className="font-medium">Email:</span> {school.secondary_contact.email}</p>
+                    <p><span className="font-medium">Office Phone:</span> {school.secondary_contact.office_phone}</p>
+                    <p><span className="font-medium">Cell Phone:</span> {school.secondary_contact.cell_phone}</p>
                   </div>
                 </div>
               </div>

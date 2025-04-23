@@ -28,31 +28,37 @@ interface SchoolFormData {
   };
 }
 
-export default function SchoolInformationForm() {
+interface SchoolInformationFormProps {
+  school?: any;
+  onCancel?: () => void;
+  onSuccess?: () => void;
+}
+
+export default function SchoolInformationForm({ school, onCancel, onSuccess }: SchoolInformationFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [hasSchool, setHasSchool] = useState(false);
   const [formData, setFormData] = useState<SchoolFormData>({
-    full_school_name: '',
-    short_school_name: '',
-    street_address: '',
-    city: '',
-    state: '',
-    zip_code: '',
+    full_school_name: school?.full_school_name || '',
+    short_school_name: school?.short_school_name || '',
+    street_address: school?.street_address || '',
+    city: school?.city || '',
+    state: school?.state || '',
+    zip_code: school?.zip_code || '',
     primary_contact: {
-      full_name: '',
-      title: '',
-      email: '',
-      office_phone: '',
-      cell_phone: '',
+      full_name: school?.primary_contact?.full_name || '',
+      title: school?.primary_contact?.title || '',
+      email: school?.primary_contact?.email || '',
+      office_phone: school?.primary_contact?.office_phone || '',
+      cell_phone: school?.primary_contact?.cell_phone || '',
     },
     secondary_contact: {
-      full_name: '',
-      title: '',
-      email: '',
-      office_phone: '',
-      cell_phone: '',
+      full_name: school?.secondary_contact?.full_name || '',
+      title: school?.secondary_contact?.title || '',
+      email: school?.secondary_contact?.email || '',
+      office_phone: school?.secondary_contact?.office_phone || '',
+      cell_phone: school?.secondary_contact?.cell_phone || '',
     },
   });
 
@@ -116,18 +122,16 @@ export default function SchoolInformationForm() {
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('No user found');
-
-      if (hasSchool) {
-        toast.error('You can only register one school. Updates are temporarily disabled.');
+      
+      if (!user) {
+        toast.error('No user found');
         return;
       }
 
-      // Register new school
-      // First, create primary contact
+      // First, create or update the primary contact
       const { data: primaryContact, error: primaryError } = await supabase
         .from('contacts')
-        .insert({
+        .upsert({
           full_name: formData.primary_contact.full_name,
           title: formData.primary_contact.title,
           email: formData.primary_contact.email,
@@ -139,10 +143,10 @@ export default function SchoolInformationForm() {
 
       if (primaryError) throw primaryError;
 
-      // Then, create secondary contact
+      // Then, create or update the secondary contact
       const { data: secondaryContact, error: secondaryError } = await supabase
         .from('contacts')
-        .insert({
+        .upsert({
           full_name: formData.secondary_contact.full_name,
           title: formData.secondary_contact.title,
           email: formData.secondary_contact.email,
@@ -154,10 +158,10 @@ export default function SchoolInformationForm() {
 
       if (secondaryError) throw secondaryError;
 
-      // Finally, create the school record
+      // Finally, create or update the school record
       const { error: schoolError } = await supabase
         .from('schools')
-        .insert({
+        .upsert({
           user_id: user.id,
           full_school_name: formData.full_school_name,
           short_school_name: formData.short_school_name,
@@ -172,10 +176,14 @@ export default function SchoolInformationForm() {
       if (schoolError) throw schoolError;
 
       toast.success('School information saved successfully!');
-      router.refresh();
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        router.refresh();
+      }
     } catch (error) {
-      console.error('Error saving school data:', error);
-      toast.error('Failed to save school information');
+      console.error('Error submitting form:', error);
+      toast.error('Error submitting form. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -185,11 +193,16 @@ export default function SchoolInformationForm() {
     return <div className="text-center py-8">Loading school information...</div>;
   }
 
-  if (hasSchool) {
+  if (hasSchool && !school) {
     return (
       <div className="text-center py-8">
-        <h2 className="text-xl font-bold mb-4">School Information</h2>
-        <p className="text-gray-600">You have already registered a school. Updates are temporarily disabled.</p>
+        <p className="text-red-600 mb-4">You can only register one school. Updates are temporarily disabled.</p>
+        <button
+          onClick={() => onCancel?.()}
+          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+        >
+          Back to School Information
+        </button>
       </div>
     );
   }
@@ -371,13 +384,22 @@ export default function SchoolInformationForm() {
         </div>
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex justify-end space-x-4">
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+          >
+            Cancel
+          </button>
+        )}
         <button
           type="submit"
-          disabled={saving || hasSchool}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 disabled:opacity-50"
+          disabled={saving}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
         >
-          {saving ? 'Saving...' : 'Register School'}
+          {saving ? 'Saving...' : school ? 'Update School Information' : 'Register School'}
         </button>
       </div>
     </form>

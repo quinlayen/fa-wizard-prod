@@ -16,8 +16,8 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 // By default, it'll store the user in the database
 // See more: https://shipfa.st/docs/features/payments
 export async function POST(req: NextRequest) {
+  console.log('Webhook received');
   const body = await req.text();
-
   const signature = headers().get("stripe-signature");
 
   let eventType;
@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
   // verify Stripe event is legit
   try {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+    console.log('Webhook event received:', event.type);
   } catch (err) {
     console.error(`Webhook signature verification failed. ${err.message}`);
     return NextResponse.json({ error: err.message }, { status: 400 });
@@ -42,27 +43,35 @@ export async function POST(req: NextRequest) {
   try {
     switch (eventType) {
       case "checkout.session.completed": {
-        // First payment is successful and a subscription is created (if mode was set to "subscription" in ButtonCheckout)
-        // ✅ Grant access to the product
+        console.log('Processing checkout.session.completed event');
         const stripeObject: Stripe.Checkout.Session = event.data
           .object as Stripe.Checkout.Session;
 
         const session = await findCheckoutSession(stripeObject.id);
+        console.log('Session details:', session);
 
         const customerId = session?.customer;
         const priceId = session?.line_items?.data[0]?.price.id;
         const userId = stripeObject.client_reference_id;
         const plan = configFile.stripe.plans.find((p) => p.priceId === priceId);
 
+        console.log('Customer ID:', customerId);
+        console.log('Price ID:', priceId);
+        console.log('User ID:', userId);
+        console.log('Plan:', plan);
+
         const customer = (await stripe.customers.retrieve(
           customerId as string
         )) as Stripe.Customer;
 
-        if (!plan) break;
+        if (!plan) {
+          console.error('No matching plan found for price ID:', priceId);
+          break;
+        }
 
         let user;
         if (!userId) {
-          // check if user already exists
+          console.log('No user ID provided, checking by email');
           const { data: profile } = await supabase
             .from("profiles")
             .select("*")
@@ -70,33 +79,44 @@ export async function POST(req: NextRequest) {
             .single();
           if (profile) {
             user = profile;
+            console.log('Found user by email:', user.id);
           } else {
-            // create a new user using supabase auth admin
+            console.log('Creating new user for email:', customer.email);
             const { data } = await supabase.auth.admin.createUser({
               email: customer.email,
             });
-
             user = data?.user;
           }
         } else {
-          // find user by ID
+          console.log('Finding user by ID:', userId);
           const { data: profile } = await supabase
             .from("profiles")
             .select("*")
             .eq("id", userId)
             .single();
-
           user = profile;
         }
 
-        await supabase
+        if (!user) {
+          console.error('No user found or created');
+          break;
+        }
+
+        console.log('Updating user profile:', user.id);
+        const { error: updateError } = await supabase
           .from("profiles")
           .update({
             customer_id: customerId,
             price_id: priceId,
-            has_access: true,
+            is_subscribed: true,
           })
-          .eq("id", user?.id);
+          .eq("id", user.id);
+
+        if (updateError) {
+          console.error('Error updating profile:', updateError);
+        } else {
+          console.log('Profile updated successfully');
+        }
 
         // Extra: send email with user link, product page, etc...
         // try {
@@ -122,45 +142,62 @@ export async function POST(req: NextRequest) {
       }
 
       case "customer.subscription.deleted": {
-        // The customer subscription stopped
-        // ❌ Revoke access to the product
+        console.log('Processing customer.subscription.deleted event');
         const stripeObject: Stripe.Subscription = event.data
           .object as Stripe.Subscription;
         const subscription = await stripe.subscriptions.retrieve(
           stripeObject.id
         );
 
-        await supabase
+        console.log('Updating subscription status for customer:', subscription.customer);
+        const { error: updateError } = await supabase
           .from("profiles")
-          .update({ has_access: false })
+          .update({ is_subscribed: false })
           .eq("customer_id", subscription.customer);
+
+        if (updateError) {
+          console.error('Error updating subscription status:', updateError);
+        } else {
+          console.log('Subscription status updated successfully');
+        }
         break;
       }
 
       case "invoice.paid": {
-        // Customer just paid an invoice (for instance, a recurring payment for a subscription)
-        // ✅ Grant access to the product
+        console.log('Processing invoice.paid event');
         const stripeObject: Stripe.Invoice = event.data
           .object as Stripe.Invoice;
         const priceId = stripeObject.lines.data[0].price.id;
         const customerId = stripeObject.customer;
 
-        // Find profile where customer_id equals the customerId (in table called 'profiles')
+        console.log('Finding profile for customer:', customerId);
         const { data: profile } = await supabase
           .from("profiles")
           .select("*")
           .eq("customer_id", customerId)
           .single();
 
-        // Make sure the invoice is for the same plan (priceId) the user subscribed to
-        if (profile.price_id !== priceId) break;
+        if (!profile) {
+          console.error('No profile found for customer:', customerId);
+          break;
+        }
 
-        // Grant the profile access to your product. It's a boolean in the database, but could be a number of credits, etc...
-        await supabase
+        if (profile.price_id !== priceId) {
+          console.error('Price ID mismatch:', profile.price_id, '!=', priceId);
+          break;
+        }
+
+        console.log('Updating subscription status for profile:', profile.id);
+        const { error: updateError } = await supabase
           .from("profiles")
-          .update({ has_access: true })
+          .update({ is_subscribed: true })
           .eq("customer_id", customerId);
 
+        if (updateError) {
+          console.error('Error updating subscription status:', updateError);
+        } else {
+          console.log('Subscription status updated successfully');
+        }
         break;
       }
 
@@ -174,7 +211,7 @@ export async function POST(req: NextRequest) {
         break;
 
       default:
-      // Unhandled event type
+        console.log('Unhandled event type:', eventType);
     }
   } catch (e) {
     console.error("stripe error: ", e.message);
@@ -182,3 +219,4 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({});
 }
+

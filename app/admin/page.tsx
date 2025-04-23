@@ -1,6 +1,7 @@
 import { createClient } from "@/libs/supabase/server";
 import { redirect } from "next/navigation";
 import AdminSchoolsManager from "@/components/AdminSchoolsManager";
+import AdminUsersManager from "@/components/AdminUsersManager";
 
 export const dynamic = "force-dynamic";
 
@@ -30,7 +31,10 @@ export default async function AdminPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
-      <AdminSchoolsManager />
+      <div className="space-y-12">
+        <AdminUsersManager />
+        <AdminSchoolsManager />
+      </div>
     </div>
   );
 } 

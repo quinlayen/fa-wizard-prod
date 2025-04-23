@@ -1,28 +1,105 @@
+'use client';
+
 import ButtonAccount from "@/components/ButtonAccount";
 import SchoolInformationForm from "@/components/SchoolInformationForm";
 import SubscribeForm from "@/components/SubscribeForm";
-import { createClient } from "@/libs/supabase/server"
+import { createClient } from "@/libs/supabase/client"
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import config from "@/config";
 
 export const dynamic = "force-dynamic";
 
-export default async function Dashboard() {
-  const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("is_admin, is_subscribed")
-    .eq("id", user?.id)
-    .single();
-  
-  const { data: schools } = await supabase
-    .from("schools")
-    .select(`
-      *,
-      primary_contact:contacts!primary_contact_id(*),
-      secondary_contact:contacts!secondary_contact_id(*)
-    `);
-  
+export default function Dashboard() {
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [schools, setSchools] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        setError('No user found');
+        setLoading(false);
+        return;
+      }
+
+      setUser(user);
+
+      // Fetch user profile
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError) {
+        setError(profileError.message);
+        setLoading(false);
+        return;
+      }
+
+      setProfile(profile);
+
+      const { data, error } = await supabase
+        .from('schools')
+        .select(`
+          *,
+          primary_contact:primary_contact_id(*),
+          secondary_contact:secondary_contact_id(*)
+        `)
+        .eq('user_id', user.id);
+
+      if (error) {
+        setError(error.message);
+      } else {
+        setSchools(data || []);
+      }
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  const handleUpdateSuccess = () => {
+    setShowUpdateForm(false);
+    // Refresh the schools list
+    const fetchSchools = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) return;
+
+      const { data } = await supabase
+        .from('schools')
+        .select(`
+          *,
+          primary_contact:primary_contact_id(*),
+          secondary_contact:secondary_contact_id(*)
+        `)
+        .eq('user_id', user.id);
+
+      if (data) {
+        setSchools(data);
+      }
+    };
+
+    fetchSchools();
+  };
+
   return (
     <main className="min-h-screen p-8 pb-24">
       <section className="max-w-4xl mx-auto space-y-8">
@@ -60,44 +137,86 @@ export default async function Dashboard() {
         {profile?.is_subscribed ? (
           <>
             <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-2xl font-bold mb-6">School Registration</h2>
-              <SchoolInformationForm />
-            </div>
-
-            {schools && schools.length > 0 && (
-              <div className="bg-white p-6 rounded-lg shadow mt-8">
-                <h2 className="text-2xl font-bold mb-6">Registered Schools</h2>
-                <div className="space-y-4">
-                  {schools.map((school) => (
-                    <div key={school.id} className="border p-4 rounded">
-                      <h3 className="font-bold text-lg">{school.full_school_name}</h3>
-                      <p className="text-gray-600">{school.short_school_name}</p>
-                      <p className="mt-2">
-                        {school.street_address}, {school.city}, {school.state} {school.zip_code}
+              <h2 className="text-2xl font-bold mb-6">School Information</h2>
+              {schools.length > 0 ? (
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-xl font-semibold">Your Registered School</h3>
+                    <button
+                      onClick={() => setShowUpdateForm(true)}
+                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    >
+                      Update School Information
+                    </button>
+                  </div>
+                  
+                  {showUpdateForm ? (
+                    <div className="text-center py-8">
+                      <p className="text-red-600 mb-4">School information updates are temporarily disabled.</p>
+                      <p className="text-gray-600 mb-4">
+                        If you need to update your school information, please contact our support team at{' '}
+                        <a href={`mailto:${config.resend.supportEmail}`} className="text-blue-600 hover:underline">
+                          {config.resend.supportEmail}
+                        </a>
                       </p>
-                      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <button
+                        onClick={() => setShowUpdateForm(false)}
+                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                      >
+                        Back to School Information
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="border p-4 rounded">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                          <h4 className="font-semibold">Primary Contact</h4>
-                          <p>{school.primary_contact.full_name}</p>
-                          <p>{school.primary_contact.title}</p>
-                          <p>{school.primary_contact.email}</p>
-                          <p>{school.primary_contact.office_phone}</p>
-                          <p>{school.primary_contact.cell_phone}</p>
+                          <h4 className="font-semibold text-lg mb-4">School Information</h4>
+                          <div className="space-y-2">
+                            <p><span className="font-medium">Full School Name:</span> {schools[0].full_school_name}</p>
+                            <p><span className="font-medium">Short School Name:</span> {schools[0].short_school_name}</p>
+                            <p><span className="font-medium">Address:</span> {schools[0].street_address}</p>
+                            <p><span className="font-medium">City:</span> {schools[0].city}</p>
+                            <p><span className="font-medium">State:</span> {schools[0].state}</p>
+                            <p><span className="font-medium">ZIP Code:</span> {schools[0].zip_code}</p>
+                          </div>
                         </div>
                         <div>
-                          <h4 className="font-semibold">Secondary Contact</h4>
-                          <p>{school.secondary_contact.full_name}</p>
-                          <p>{school.secondary_contact.title}</p>
-                          <p>{school.secondary_contact.email}</p>
-                          <p>{school.secondary_contact.office_phone}</p>
-                          <p>{school.secondary_contact.cell_phone}</p>
+                          <h4 className="font-semibold text-lg mb-4">Contact Information</h4>
+                          <div className="space-y-4">
+                            <div>
+                              <h5 className="font-medium mb-2">Primary Contact</h5>
+                              <div className="space-y-1">
+                                <p><span className="font-medium">Name:</span> {schools[0].primary_contact?.full_name}</p>
+                                <p><span className="font-medium">Title:</span> {schools[0].primary_contact?.title}</p>
+                                <p><span className="font-medium">Email:</span> {schools[0].primary_contact?.email}</p>
+                                <p><span className="font-medium">Office Phone:</span> {schools[0].primary_contact?.office_phone}</p>
+                                <p><span className="font-medium">Cell Phone:</span> {schools[0].primary_contact?.cell_phone}</p>
+                              </div>
+                            </div>
+                            <div>
+                              <h5 className="font-medium mb-2">Secondary Contact</h5>
+                              <div className="space-y-1">
+                                {schools[0].secondary_contact && (
+                                  <>
+                                    <p><span className="font-medium">Name:</span> {schools[0].secondary_contact.full_name}</p>
+                                    <p><span className="font-medium">Title:</span> {schools[0].secondary_contact.title}</p>
+                                    <p><span className="font-medium">Email:</span> {schools[0].secondary_contact.email}</p>
+                                    <p><span className="font-medium">Office Phone:</span> {schools[0].secondary_contact.office_phone}</p>
+                                    <p><span className="font-medium">Cell Phone:</span> {schools[0].secondary_contact.cell_phone}</p>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  ))}
+                  )}
                 </div>
-              </div>
-            )}
+              ) : (
+                <SchoolInformationForm onSuccess={handleUpdateSuccess} />
+              )}
+            </div>
           </>
         ) : (
           <div className="bg-white p-6 rounded-lg shadow">

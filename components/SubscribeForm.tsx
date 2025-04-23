@@ -27,7 +27,7 @@ export default function SubscribeForm() {
       <div className="prose max-w-none">
         <h2 className="text-2xl font-bold mb-4">Choose Your Plan</h2>
         <p className="text-gray-600 mb-6">
-          Subscribe to FA Wizard to get access to all features and start managing your school&apos;s information.
+          Subscribe to FA Wizard™ to get access to all features and start managing your school&apos;s information.
         </p>
         <p className="text-sm text-gray-500">
           We&apos;ll never share your email with anyone else.
