@@ -66,13 +66,17 @@ export const createCheckout = async ({
         price: priceId,
         quantity: 1,
       },
-      {
-        price: setupFeePriceId,
-        quantity: 1
-      }
+
     ];
 
     // Add setup fee if provided
+    if (typeof setupFeePriceId === 'string' && setupFeePriceId.trim().length > 0) {
+      lineItems.push({
+        price: setupFeePriceId,
+        quantity: 1,
+      });
+    }
+    console.log("Stripe Line Items:", lineItems)
     // if (setupFeePriceId) {
     //   lineItems.push({
     //     price: setupFeePriceId,
