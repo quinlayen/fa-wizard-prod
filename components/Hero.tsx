@@ -2,6 +2,10 @@ import Image from "next/image";
 import TestimonialsAvatars from "./TestimonialsAvatars";
 import config from "@/config";
 import wizardGraphic from "@/app/wizard_graphic_left.png";
+import ButtonSigninIconOnly from "./ButtonSigninIconOnly";
+
+
+const cta: JSX.Element = <ButtonSigninIconOnly extraStyle="btn-primary btn-wide" />;
 
 const Hero = () => {
   return (
@@ -74,9 +78,8 @@ const Hero = () => {
           />
         </div>
         <div className="flex flex-col items-center gap-4">
-          <button className="btn btn-primary btn-wide">
-            Get {config.appName}
-          </button>
+          {cta}
+          
           <p className="text-1xl font-bold text-[#003767] leading-tight font-oswald text-center">
           <span className="text-[#FDB913]">Limited-Time Offer:</span> Get the revolutionary FA Wizard™ system for only <span className="text-[#FDB913]">$295 / month!</span>
           </p>
