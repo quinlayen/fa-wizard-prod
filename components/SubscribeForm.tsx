@@ -5,6 +5,8 @@ import { useState } from 'react';
 import { createClient } from '@/libs/supabase/client';
 import ButtonCheckout from './ButtonCheckout';
 import config from '@/config';
+import Image from 'next/image';
+import logo from '@/app/icon.png';
 
 export default function SubscribeForm() {
   const [loading, setLoading] = useState(false);
@@ -62,16 +64,69 @@ export default function SubscribeForm() {
                 </li>
               ))}
             </ul>
-            
             <ButtonCheckout
               mode="subscription"
               priceId={plan.priceId}
               onSuccess={handleSubscriptionSuccess}
               className="w-full bg-[#003767] text-white hover:bg-[#002a4d]"
             />
+            <p className="text-gray-600 mb-4"> Enter <strong>{plan.couponCode}</strong> for 24-month promotion price!</p>
           </div>
         ))}
       </div>
+       {/* Right side - Blue background with content */}
+       <div className="hidden md:block w-1/2 bg-[#003767] text-white">
+        <div className="h-full flex flex-col justify-center p-12">
+          <div className="w-full max-w-md mx-auto">
+            <div className="mb-8">
+              <Image
+                src={logo}
+                alt={`${config.appName} logo`}
+                className="w-24 h-24 mb-6"
+                width={96}
+                height={96}
+              />
+              <h2 className="text-3xl font-bold mb-4">Why Choose FA Wizard™?</h2>
+              <p className="text-lg opacity-90 mb-6">
+                Join hundreds of schools that trust FA Wizard™ for their compliance needs.
+              </p>
+            </div>
+
+            <div className="space-y-6">
+              <div className="flex items-start">
+                <svg className="w-6 h-6 text-[#FDB913] mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <div>
+                  <h3 className="font-bold mb-2">Complete Compliance Solution</h3>
+                  <p className="opacity-90">Access all the tools you need to maintain full Title IV compliance.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start">
+                <svg className="w-6 h-6 text-[#FDB913] mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <div>
+                  <h3 className="font-bold mb-2">Automated Updates</h3>
+                  <p className="opacity-90">Stay current with regulatory changes without lifting a finger.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start">
+                <svg className="w-6 h-6 text-[#FDB913] mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <div>
+                  <h3 className="font-bold mb-2">Expert Support</h3>
+                  <p className="opacity-90">Get help from our team of financial aid compliance experts.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
 
       {loading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
