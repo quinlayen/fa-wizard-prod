@@ -2,7 +2,7 @@ import Stripe from "stripe";
 
 interface CreateCheckoutParams {
   priceId: string;
-  setupFeePriceId?: string;
+  setupFeePriceId: string;
   couponCode?: string;
   mode: "payment" | "subscription";
   successUrl: string;
@@ -66,15 +66,19 @@ export const createCheckout = async ({
         price: priceId,
         quantity: 1,
       },
+      {
+        price: setupFeePriceId,
+        quantity: 1
+      }
     ];
 
     // Add setup fee if provided
-    if (setupFeePriceId) {
-      lineItems.push({
-        price: setupFeePriceId,
-        quantity: 1,
-      });
-    }
+    // if (setupFeePriceId) {
+    //   lineItems.push({
+    //     price: setupFeePriceId,
+    //     quantity: 1,
+    //   });
+    // }
 
     console.log('Creating Stripe checkout session with line items:', lineItems);
 
