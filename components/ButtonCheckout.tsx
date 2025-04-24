@@ -47,12 +47,18 @@ const ButtonCheckout = ({
         return;
       }
 
+      // Construct proper URLs using the domain from config
+      const baseUrl = `https://${config.domainName}`;
+      const currentPath = window.location.pathname;
+      const successUrl = `${baseUrl}${currentPath}`;
+      const cancelUrl = `${baseUrl}${currentPath}`;
+
       const { url }: { url: string } = await apiClient.post(
         "/stripe/create-checkout",
         {
           priceId,
-          successUrl: window.location.href,
-          cancelUrl: window.location.href,
+          successUrl,
+          cancelUrl,
           mode,
         }
       );
@@ -61,7 +67,11 @@ const ButtonCheckout = ({
         onSuccess();
       }
 
-      window.location.href = url;
+      if (url) {
+        window.location.href = url;
+      } else {
+        throw new Error("No checkout URL received");
+      }
     } catch (e) {
       console.error(e);
       // If there's an error, redirect to sign in
