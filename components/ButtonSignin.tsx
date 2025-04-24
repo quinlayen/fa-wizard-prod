@@ -49,10 +49,10 @@ const ButtonSignin = ({
           />
         ) : (
           <span className="w-6 h-6 bg-base-300 flex justify-center items-center rounded-full shrink-0">
-            {user?.user_metadata?.name?.charAt(0) || user?.email?.charAt(0)}
+            {user?.user_metadata?.display_name?.charAt(0) || user?.email?.charAt(0)?.toUpperCase()}
           </span>
         )}
-        {user?.user_metadata?.name || user?.email || "Account"}
+        {user?.user_metadata?.display_name || user?.email?.toLowerCase() || "Account"}
       </Link>
     );
   }
