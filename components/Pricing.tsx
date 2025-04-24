@@ -2,6 +2,7 @@
 
 import config from "@/config";
 import ButtonCheckout from "./ButtonCheckout";
+import ButtonSigninIconOnly from "./ButtonSigninIconOnly";
 
 // <Pricing/> displays the pricing plans for your app
 // It's your Stripe config in config.js.stripe.plans[] that will be used to display the plans
@@ -91,12 +92,13 @@ const Pricing = () => {
                   </ul>
                 )}
                 <div className="space-y-2">
-                  <ButtonCheckout 
+                  <ButtonSigninIconOnly />
+                  {/* <ButtonCheckout 
                     priceId={plan.priceId}
                     mode="subscription"
                     onSuccess={() => window.location.href = '/dashboard'}
                     className="w-full bg-[#003767] text-white hover:bg-[#002a4d]"
-                  />
+                  /> */}
                   <p className="text-sm text-center text-base-content/80 font-medium">
                     *Special introductory rate guaranteed for twenty-four months. Regular price is <s>$395</s>/month.
                   </p>
