@@ -22,8 +22,8 @@ const config = {
         // REQUIRED — we use this to find the plan in the webhook (for instance if you want to update the user's credits based on the plan)
         priceId:
           process.env.NODE_ENV === "development"
-            ? "price_1RETMR04Oq5D44E3CWrw4gYq"
-            : "price_1RETMR04Oq5D44E3CWrw4gYq",
+            ? "price_1RHKnO04Oq5D44E3JUIsVFRE"
+            : "price_1RHKnO04Oq5D44E3JUIsVFRE",
         //  REQUIRED - Name of the plan, displayed on the pricing page
         name: "FA Wizard™ ",
         isFeatured: true,
