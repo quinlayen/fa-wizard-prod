@@ -2,7 +2,7 @@ import Stripe from "stripe";
 
 interface CreateCheckoutParams {
   priceId: string;
-  setupFeePriceId: string;
+  setupFeePriceId?: string;
   couponCode?: string;
   mode: "payment" | "subscription";
   successUrl: string;

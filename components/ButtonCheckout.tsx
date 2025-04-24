@@ -22,7 +22,7 @@ const ButtonCheckout = ({
   className,
 }: {
   priceId: string;
-  setupFeePriceId: string;
+  setupFeePriceId?: string;
   couponCode?: string;
   mode?: "subscription" | "payment";
   onSuccess?: () => void;
