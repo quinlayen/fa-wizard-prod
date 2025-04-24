@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
       data: { user },
     } = await supabase.auth.getUser();
 
-    const { priceId, mode, successUrl, cancelUrl } = body;
+    const { priceId, setupFeePriceId, couponCode, mode, successUrl, cancelUrl } = body;
 
     const { data } = await supabase
       .from("profiles")
@@ -45,6 +45,8 @@ export async function POST(req: NextRequest) {
 
     const stripeSessionURL = await createCheckout({
       priceId,
+      setupFeePriceId,
+      couponCode,
       mode,
       successUrl,
       cancelUrl,
@@ -55,8 +57,6 @@ export async function POST(req: NextRequest) {
         // If the user has already purchased, it will automatically prefill it's credit card
         customerId: data?.customer_id,
       },
-      // If you send coupons from the frontend, you can pass it here
-      // couponId: body.couponId,
     });
 
     return NextResponse.json({ url: stripeSessionURL });

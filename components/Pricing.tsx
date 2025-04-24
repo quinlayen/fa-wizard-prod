@@ -101,7 +101,10 @@ const Pricing = () => {
                     *Special introductory rate guaranteed for twenty-four months. Regular price is <s>$395</s>/month.
                   </p>
                   <p className="text-sm text-center text-base-content/80 font-medium">
-                    *One-time set-up fee of $100 also applies. Use coupon code FAExperts2025 to receive this discounted rate.
+                    *Use coupon code <strong>FAExperts2025</strong> to receive this discounted rate.
+                  </p>
+                  <p className="text-sm text-center text-base-content/80 font-medium">
+                    *One-time set-up fee of $100 also applies. 
                   </p>
                 </div>
               </div>

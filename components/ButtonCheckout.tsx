@@ -15,11 +15,15 @@ import { useRouter } from "next/navigation";
 // You can also change the mode to "subscription" if you want to create a subscription instead of a one-time payment
 const ButtonCheckout = ({
   priceId,
+  setupFeePriceId,
+  couponCode,
   mode = "payment",
   onSuccess,
   className,
 }: {
   priceId: string;
+  setupFeePriceId?: string;
+  couponCode?: string;
   mode?: "payment" | "subscription";
   onSuccess?: () => void;
   className?: string;
@@ -57,6 +61,8 @@ const ButtonCheckout = ({
         "/stripe/create-checkout",
         {
           priceId,
+          setupFeePriceId,
+          couponCode,
           successUrl,
           cancelUrl,
           mode,

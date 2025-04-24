@@ -34,10 +34,13 @@ export interface ConfigProps {
     plans: {
       isFeatured?: boolean;
       priceId: string;
+      setupFeePriceId?: string;
+      couponCode?: string;
       name: string;
       description?: string;
       price: number;
       priceAnchor?: number;
+      setupFee?: number;
       features: {
         name: string;
       }[];

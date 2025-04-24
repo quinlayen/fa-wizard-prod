@@ -2,10 +2,11 @@ import Stripe from "stripe";
 
 interface CreateCheckoutParams {
   priceId: string;
+  setupFeePriceId?: string;
+  couponCode?: string;
   mode: "payment" | "subscription";
   successUrl: string;
   cancelUrl: string;
-  couponId?: string | null;
   clientReferenceId?: string;
   user?: {
     customerId?: string;
@@ -26,7 +27,8 @@ export const createCheckout = async ({
   successUrl,
   cancelUrl,
   priceId,
-  couponId,
+  setupFeePriceId,
+  couponCode,
 }: CreateCheckoutParams): Promise<string> => {
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -58,20 +60,30 @@ export const createCheckout = async ({
       extraParams.tax_id_collection = { enabled: true };
     }
 
+    const lineItems = [
+      {
+        price: priceId,
+        quantity: 1,
+      },
+    ];
+
+    // Add setup fee if provided
+    if (setupFeePriceId) {
+      lineItems.push({
+        price: setupFeePriceId,
+        quantity: 1,
+      });
+    }
+
     const stripeSession = await stripe.checkout.sessions.create({
       mode,
       allow_promotion_codes: true,
       client_reference_id: clientReferenceId,
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      discounts: couponId
+      line_items: lineItems,
+      discounts: couponCode
         ? [
             {
-              coupon: couponId,
+              coupon: couponCode,
             },
           ]
         : [],

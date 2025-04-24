@@ -22,8 +22,15 @@ const config = {
         // REQUIRED — we use this to find the plan in the webhook (for instance if you want to update the user's credits based on the plan)
         priceId:
           process.env.NODE_ENV === "development"
-            ? "price_1RETMR04Oq5D44E3CWrw4gYq"
-            : "price_1RETMR04Oq5D44E3CWrw4gYq",
+            ? "price_1RHKnO04Oq5D44E3JUIsVFRE"
+            : "price_1RHKnO04Oq5D44E3JUIsVFRE",
+        // Setup fee price ID
+        setupFeePriceId:
+          process.env.NODE_ENV === "development"
+            ? "price_1RHKpi04Oq5D44E35mOfM82i" // Replace with your dev setup fee price ID
+            : "price_1RHKpi04Oq5D44E35mOfM82i", // Replace with your prod setup fee price ID
+        // Coupon code for the discount
+        couponCode: "FAExperts2025",
         //  REQUIRED - Name of the plan, displayed on the pricing page
         name: "FA Wizard™",
         isFeatured: true,
@@ -33,6 +40,8 @@ const config = {
         price: 295,
         // If you have an anchor price (i.e. $29) that you want to display crossed out, put it here. Otherwise, leave it empty
         priceAnchor: 395,
+        // Setup fee amount to display
+        setupFee: 100,
         features: [
           {
             name: "Instantly access 36+ prewritten federal policies",
