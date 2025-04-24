@@ -60,6 +60,7 @@ export const createCheckout = async ({
       extraParams.tax_id_collection = { enabled: true };
     }
 
+    // Create line items array
     const lineItems = [
       {
         price: priceId,
@@ -74,6 +75,8 @@ export const createCheckout = async ({
         quantity: 1,
       });
     }
+
+    console.log('Creating Stripe checkout session with line items:', lineItems);
 
     const stripeSession = await stripe.checkout.sessions.create({
       mode,
@@ -92,10 +95,14 @@ export const createCheckout = async ({
       ...extraParams,
     });
 
+    if (!stripeSession.url) {
+      throw new Error("No URL returned from Stripe checkout session");
+    }
+
     return stripeSession.url;
   } catch (e) {
-    console.error(e);
-    return null;
+    console.error("Stripe checkout error:", e);
+    throw e;
   }
 };
 
