@@ -1,5 +1,6 @@
 import Image from "next/image";
 import TestimonialsAvatars from "./TestimonialsAvatars";
+import type { JSX } from "react";
 import config from "@/config";
 import wizardGraphic from "@/app/wizard_graphic_left.png";
 import ButtonSigninIconOnly from "./ButtonSigninIconOnly";
