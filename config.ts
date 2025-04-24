@@ -30,7 +30,7 @@ const config = {
             ? "price_1RHKpi04Oq5D44E35mOfM82i" // Replace with your dev setup fee price ID
             : "price_1RHKpi04Oq5D44E35mOfM82i", // Replace with your prod setup fee price ID
         // Coupon code for the discount
-        couponCode: "FAExperts2025",
+        couponCode: "FAEXPERTS2025",
         //  REQUIRED - Name of the plan, displayed on the pricing page
         name: "FA Wizard™",
         isFeatured: true,

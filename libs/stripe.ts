@@ -4,7 +4,7 @@ interface CreateCheckoutParams {
   priceId: string;
   setupFeePriceId?: string;
   couponCode?: string;
-  mode: "payment" | "subscription";
+  mode: "subscription" | "payment";
   successUrl: string;
   cancelUrl: string;
   clientReferenceId?: string;

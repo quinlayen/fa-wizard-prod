@@ -71,7 +71,7 @@ export default function SubscribeForm() {
               className="w-full bg-[#003767] text-white hover:bg-[#002a4d]"
             />
             <br/>
-            <p className="text-gray-600 mb-4"> * Enter Coupon Code <strong>{plan.couponCode}</strong> for 24-month promotion price!</p>
+            <p className="text-gray-600 mb-4"> * Enter  <strong>{plan.couponCode}</strong> for 24-month promotion price!</p>
           </div>
         ))}
       </div>
