@@ -25,7 +25,7 @@ const config = {
             ? "price_1RETMR04Oq5D44E3CWrw4gYq"
             : "price_1RETMR04Oq5D44E3CWrw4gYq",
         //  REQUIRED - Name of the plan, displayed on the pricing page
-        name: "FA Wizard™",
+        name: "FA Wizard™ ",
         isFeatured: true,
         // A friendly description of the plan, displayed on the pricing page. Tip: explain why this plan and not others
         description: "Complete Title IV compliance solution",
