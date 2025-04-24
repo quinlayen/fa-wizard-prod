@@ -175,6 +175,10 @@ export default function SubscribeForm() {
                   onSuccess={handleSubscriptionSuccess}
                   className="w-full bg-[#003767] text-white hover:bg-[#002a4d]"
                 />
+                <br/>
+                <p 
+                  className="text-gray-600 mb-4"> * Enter Coupon Code <strong>{plan.couponCode}</strong> for 24-month promotion price!
+                </p>
               </div>
             ))}
           </div>
@@ -193,24 +197,24 @@ export default function SubscribeForm() {
               height={96}
             />
             <h2 className="text-3xl font-bold mb-4">Why Choose FA Wizard™?</h2>
-            <p className="text-lg opacity-90 mb-6">
+            {/* <p className="text-lg opacity-90 mb-6">
               Join hundreds of schools that trust FA Wizard™ for their compliance needs.
-            </p>
+            </p> */}
           </div>
 
           <div className="space-y-6">
             {[
               {
-                title: 'Complete Compliance Solution',
-                desc: 'Access all the tools you need to maintain full Title IV compliance.',
+                title: 'Ready-to-Use Compliance Manual — Fully Aligned with Title IV and Accreditor Standards',
+                desc: 'A customized Policy and Procedure Manual with more than 35 required P&P statements - compliant with Title IV, accreditor, and state requirements.',
               },
               {
-                title: 'Automated Updates',
-                desc: 'Stay current with regulatory changes without lifting a finger.',
+                title: 'Customized Consumer Website',
+                desc: "'Consumer Information' webpages page tailored to your school - with 30 different required Title IV disclosures, matching your site’s fonts and colors.",
               },
               {
-                title: 'Expert Support',
-                desc: 'Get help from our team of financial aid compliance experts.',
+                title: 'Automated Compliance Calendar for Staff & Management',
+                desc: 'An automated calendar to remind staff (and management) of upcoming federal deadlines, reports, and administrative tasks.',
               },
             ].map((item, idx) => (
               <motion.div
