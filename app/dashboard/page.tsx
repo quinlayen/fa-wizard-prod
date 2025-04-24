@@ -198,17 +198,29 @@ export default function Dashboard() {
                               <div className="space-y-1">
                                 {schools[0].secondary_contact && (
                                   <>
-                                    <p><span className="font-medium">Name:</span> {schools[0].secondary_contact.full_name}</p>
-                                    <p><span className="font-medium">Title:</span> {schools[0].secondary_contact.title}</p>
-                                    <p><span className="font-medium">Email:</span> {schools[0].secondary_contact.email}</p>
-                                    <p><span className="font-medium">Office Phone:</span> {schools[0].secondary_contact.office_phone}</p>
-                                    <p><span className="font-medium">Cell Phone:</span> {schools[0].secondary_contact.cell_phone}</p>
+                                    <p><span className="font-medium">Name:</span> {schools[0].secondary_contact?.full_name}</p>
+                                    <p><span className="font-medium">Title:</span> {schools[0].secondary_contact?.title}</p>
+                                    <p><span className="font-medium">Email:</span> {schools[0].secondary_contact?.email}</p>
+                                    <p><span className="font-medium">Office Phone:</span> {schools[0].secondary_contact?.office_phone}</p>
+                                    <p><span className="font-medium">Cell Phone:</span> {schools[0].secondary_contact?.cell_phone}</p>
                                   </>
                                 )}
                               </div>
                             </div>
                           </div>
                         </div>
+                      </div>
+                      
+                      {/* Access Button */}
+                      <div className="mt-8 text-center">
+                        <a
+                          href="https://www.fawizard.net/login"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-block bg-[#003767] text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-[#002a4d] transition-colors"
+                        >
+                          Access {schools[0].short_school_name}
+                        </a>
                       </div>
                     </div>
                   )}
