@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createClient } from "@/libs/supabase/client";
 import apiClient from "@/libs/api";
 import config from "@/config";
 import Image from "next/image";
 import logo from "@/app/icon.png";
-
+import { useRouter } from "next/navigation";
 
 // This component is used to create Stripe Checkout Sessions
 // It calls the /api/stripe/create-checkout route with the priceId, successUrl and cancelUrl
@@ -24,11 +25,28 @@ const ButtonCheckout = ({
   className?: string;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [user, setUser] = useState(null);
+  const router = useRouter();
+  const supabase = createClient();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, [supabase]);
 
   const handlePayment = async () => {
     setIsLoading(true);
 
     try {
+      if (!user) {
+        // If user is not authenticated, redirect to sign in
+        router.push(config.auth.loginUrl);
+        return;
+      }
+
       const { url }: { url: string } = await apiClient.post(
         "/stripe/create-checkout",
         {
@@ -46,15 +64,18 @@ const ButtonCheckout = ({
       window.location.href = url;
     } catch (e) {
       console.error(e);
+      // If there's an error, redirect to sign in
+      router.push(config.auth.loginUrl);
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return (
     <button
       className={`btn btn-primary btn-block group ${className || ''}`}
-      onClick={() => handlePayment()}
+      onClick={handlePayment}
+      disabled={isLoading}
     >
       {isLoading ? (
         <span className="loading loading-spinner loading-xs"></span>
