@@ -137,7 +137,16 @@ export default function Dashboard() {
         {profile?.is_subscribed ? (
           <>
             <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-2xl font-bold mb-6">School Information</h2>
+              <div className="mb-6">
+                <a
+                  href="https://www.fawizard.net/login"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block bg-[#003767] text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-[#FDB913] transition-colors"
+                >
+                  Access {schools[0].short_school_name}
+                </a>
+              </div>
               {schools.length > 0 ? (
                 <div className="space-y-6">
                   <div className="flex justify-between items-center">
@@ -209,18 +218,6 @@ export default function Dashboard() {
                             </div>
                           </div>
                         </div>
-                      </div>
-                      
-                      {/* Access Button */}
-                      <div className="mt-8 text-center">
-                        <a
-                          href="https://www.fawizard.net/login"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-block bg-[#003767] text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-[#002a4d] transition-colors"
-                        >
-                          Access {schools[0].short_school_name}
-                        </a>
                       </div>
                     </div>
                   )}

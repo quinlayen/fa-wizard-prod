@@ -119,10 +119,10 @@ export default function Login() {
 
       <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4">
-          {isSignUp ? 'Create an Account' : 'Sign In'}
+          {isSignUp ? 'Create a Subscription Account' : 'Sign In to Subscription Payment System'}
         </h1>
         <p className="text-base-content/60">
-          {isSignUp ? 'Enter your details to create an account' : 'Welcome back! Enter your email to sign in'}
+          {isSignUp ? 'Enter your details to create an subscription account' : 'Welcome back! Enter your email to sign in to the subscription payment portal'}
         </p>
       </div>
 
