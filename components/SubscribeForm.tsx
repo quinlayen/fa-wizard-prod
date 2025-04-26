@@ -68,7 +68,7 @@ export default function SubscribeForm() {
               mode="subscription"
               priceId={plan.priceId}
               setupFeePriceId={plan.setupFeePriceId}
-              couponCode={plan.couponCode}
+              // couponCode={plan.couponCode}
               onSuccess={handleSubscriptionSuccess}
               className="w-full bg-[#003767] text-white hover:bg-[#002a4d]"
             />
