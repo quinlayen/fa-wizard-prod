@@ -3,8 +3,8 @@ import Stripe from "stripe";
 interface CreateCheckoutParams {
   priceId: string;
   setupFeePriceId?: string;
-  couponCode?: string;
-  mode: "subscription" | "payment";
+  couponCodes?: string[];
+  mode?: "payment" | "subscription";
   successUrl: string;
   cancelUrl: string;
   clientReferenceId?: string;
@@ -22,13 +22,13 @@ interface CreateCustomerPortalParams {
 // This is used to create a Stripe Checkout for one-time payments. It's usually triggered with the <ButtonCheckout /> component. Webhooks are used to update the user's state in the database.
 export const createCheckout = async ({
   user,
-  mode,
+  mode = "subscription",
   clientReferenceId,
   successUrl,
   cancelUrl,
   priceId,
   setupFeePriceId,
-  couponCode,
+  couponCodes,
 }: CreateCheckoutParams): Promise<string> => {
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -86,18 +86,18 @@ export const createCheckout = async ({
 
     console.log('Creating Stripe checkout session with line items:', lineItems);
 
+    // If there are coupon codes, use the first one as the discount
+    // (Stripe Checkout currently only supports one coupon at a time)
+    const discounts = couponCodes && couponCodes.length > 0 
+      ? [{ coupon: couponCodes[0] }]
+      : undefined;
+
     const stripeSession = await stripe.checkout.sessions.create({
       mode,
       allow_promotion_codes: true,
       client_reference_id: clientReferenceId,
       line_items: lineItems,
-      discounts: couponCode
-        ? [
-            {
-              coupon: couponCode,
-            },
-          ]
-        : [],
+      discounts,
       success_url: successUrl,
       cancel_url: cancelUrl,
       ...extraParams,

@@ -13,21 +13,23 @@ import { useRouter } from "next/navigation";
 // It calls the /api/stripe/create-checkout route with the priceId, successUrl and cancelUrl
 // Users must be authenticated. It will prefill the Checkout data with their email and/or credit card (if any)
 // You can also change the mode to "subscription" if you want to create a subscription instead of a one-time payment
+interface Props {
+  priceId: string;
+  setupFeePriceId?: string;
+  couponCodes?: string[];
+  mode?: "payment" | "subscription";
+  onSuccess?: () => void;
+  className?: string;
+}
+
 const ButtonCheckout = ({
   priceId,
   setupFeePriceId,
-  couponCode,
+  couponCodes,
   mode = "subscription",
   onSuccess,
   className,
-}: {
-  priceId: string;
-  setupFeePriceId?: string;
-  couponCode?: string;
-  mode?: "subscription" | "payment";
-  onSuccess?: () => void;
-  className?: string;
-}) => {
+}: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [user, setUser] = useState(null);
   const router = useRouter();
@@ -62,7 +64,7 @@ const ButtonCheckout = ({
         {
           priceId,
           setupFeePriceId,
-          couponCode,
+          couponCodes,
           successUrl,
           cancelUrl,
           mode,

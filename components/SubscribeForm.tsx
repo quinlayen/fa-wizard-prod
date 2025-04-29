@@ -73,7 +73,12 @@ export default function SubscribeForm() {
               className="w-full bg-[#003767] text-white hover:bg-[#002a4d]"
             />
             <br/>
-            <p className="text-gray-600 mb-4"> * Enter  <strong>{plan.couponCode}</strong> for 24-month promotion price!</p>
+            {plan.couponCodes && plan.couponCodes.length > 0 && (
+              <p className="text-gray-600 mb-4"> 
+                * Enter one of these codes for special pricing: 
+                <strong>{plan.couponCodes.join(", ")}</strong>
+              </p>
+            )}
           </div>
         ))}
       </div>

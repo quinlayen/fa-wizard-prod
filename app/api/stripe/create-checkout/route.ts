@@ -6,36 +6,35 @@ import { NextRequest, NextResponse } from "next/server";
 // It's called by the <ButtonCheckout /> component
 // Users must be authenticated. It will prefill the Checkout data with their email and/or credit card (if any)
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-
-  if (!body.priceId) {
-    return NextResponse.json(
-      { error: "Price ID is required" },
-      { status: 400 }
-    );
-  } else if (!body.successUrl || !body.cancelUrl) {
-    return NextResponse.json(
-      { error: "Success and cancel URLs are required" },
-      { status: 400 }
-    );
-  } else if (!body.mode) {
-    return NextResponse.json(
-      {
-        error:
-          "Mode is required (either 'payment' for one-time payments or 'subscription' for recurring subscription)",
-      },
-      { status: 400 }
-    );
-  }
-
   try {
+    const body = await req.json();
+    const { priceId, setupFeePriceId, couponCodes, mode, successUrl, cancelUrl } = body;
+
+    if (!priceId) {
+      return NextResponse.json(
+        { error: "Price ID is required" },
+        { status: 400 }
+      );
+    } else if (!successUrl || !cancelUrl) {
+      return NextResponse.json(
+        { error: "Success and cancel URLs are required" },
+        { status: 400 }
+      );
+    } else if (!mode) {
+      return NextResponse.json(
+        {
+          error:
+            "Mode is required (either 'payment' for one-time payments or 'subscription' for recurring subscription)",
+        },
+        { status: 400 }
+      );
+    }
+
     const supabase = createClient();
 
     const {
       data: { user },
     } = await supabase.auth.getUser();
-
-    const { priceId, setupFeePriceId, couponCode, mode, successUrl, cancelUrl } = body;
 
     const { data } = await supabase
       .from("profiles")
@@ -46,7 +45,7 @@ export async function POST(req: NextRequest) {
     const stripeSessionURL = await createCheckout({
       priceId,
       setupFeePriceId,
-      couponCode,
+      couponCodes,
       mode,
       successUrl,
       cancelUrl,
@@ -60,8 +59,11 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ url: stripeSessionURL });
-  } catch (e) {
-    console.error(e);
-    return NextResponse.json({ error: e?.message }, { status: 500 });
+  } catch (error) {
+    console.error("Error in create-checkout:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
