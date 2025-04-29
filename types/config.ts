@@ -35,7 +35,7 @@ export interface ConfigProps {
       isFeatured?: boolean;
       priceId: string;
       setupFeePriceId?: string;
-      couponCode?: string;
+      couponCodes?: string[];
       name: string;
       description?: string;
       price: number;

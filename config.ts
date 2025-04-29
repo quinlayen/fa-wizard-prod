@@ -20,17 +20,13 @@ const config = {
     plans: [
       {
         // REQUIRED — we use this to find the plan in the webhook (for instance if you want to update the user's credits based on the plan)
-        priceId:
-          process.env.NODE_ENV === "development"
-            ? "price_1RHKnO04Oq5D44E3JUIsVFRE"
-            : "price_1RHKnO04Oq5D44E3JUIsVFRE",
+        // priceId: "price_1RHKnO04Oq5D44E3JUIsVFRE",  //Test Key
+        priceId: "price_1RJHKP04Oq5D44E39uLyee83",  //Prod Key
         // Setup fee price ID
-        setupFeePriceId:
-          process.env.NODE_ENV === "development"
-            ? "price_1RHKpi04Oq5D44E35mOfM82i" // Replace with your dev setup fee price ID
-            : "price_1RHKpi04Oq5D44E35mOfM82i", // Replace with your prod setup fee price ID
-        // Coupon code for the discount
-        couponCode: "FAEXPERTS2025",
+        // setupFeePriceId: "price_1RHKpi04Oq5D44E35mOfM82i",  //Test Key
+        setupFeePriceId: "price_1RJHKL04Oq5D44E3J2xDFpmu",  //Prod Key
+        // Multiple coupon codes for discounts
+        couponCodes: ["FAEXPERTS2025", "ADMINTEST"],
         //  REQUIRED - Name of the plan, displayed on the pricing page
         name: "FA Wizard™",
         isFeatured: true,
@@ -86,11 +82,11 @@ const config = {
   },
   resend: {
     // REQUIRED — Email 'From' field to be used when sending magic login links
-    fromNoReply: `Dave at FA Wizard <peterfaso@gmail.com>`,
+    fromNoReply: `Dave at FA Wizard <david.canaski@faexperts.com>`,
     // REQUIRED — Email 'From' field to be used when sending other emails, like abandoned carts, updates etc..
-    fromAdmin: `Dave at FA Wizard <peterfaso@gmail.com>`,
+    fromAdmin: `Dave at FA Wizard <david.canaski@faexperts.com>`,
     // Email shown to customer if need support. Leave empty if not needed => if empty, set up Crisp above, otherwise you won't be able to offer customer support."
-    supportEmail: "peterfaso@gmail.com",
+    supportEmail: "david.canaski@faexperts.com",
   },
   colors: {
     // REQUIRED — The DaisyUI theme to use (added to the main layout.js). Leave blank for default (light & dark mode). If you any other theme than light/dark, you need to add it in config.tailwind.js in daisyui.themes.
