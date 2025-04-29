@@ -76,7 +76,9 @@ export default function SubscribeForm() {
             {plan.couponCodes && plan.couponCodes.length > 0 && (
               <p className="text-gray-600 mb-4"> 
                 * Enter one of these codes for special pricing: 
-                <strong>{plan.couponCodes.join(", ")}</strong>
+                {/* <strong>{plan.couponCodes.join(", ")}</strong> */}
+                <strong>{plan.couponCodes[0]}</strong>
+
               </p>
             )}
           </div>
