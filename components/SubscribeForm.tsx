@@ -74,17 +74,17 @@ export default function SubscribeForm() {
             />
             <br/>
             {plan.couponCodes && plan.couponCodes.length > 0 && (
-              <p className="text-gray-600 mb-4 leading-relaxed">
-  <span className="block mb-1">
-    * Enter for 
-    <span className="font-semibold text-gray-800"> $100/month </span> 
-    for the first 
-    <span className="font-semibold text-gray-800"> 24 months</span>:
-  </span>
-  <span className="inline-block mt-1 font-semibold text-primary">
-    {plan.couponCodes[0]}
-  </span>
-</p>
+              <p className="text-gray-600 mb-4 text-center">
+                <span className="block mb-2">
+                  * Enter for 
+                  <span className="font-semibold text-gray-800"> $100/month </span> 
+                  for the first 
+                  <span className="font-semibold text-gray-800"> 24 months</span>:
+                </span>
+                <span className="inline-block font-bold text-[#002a4d] bg-gray-50 px-4 py-2 rounded-md">
+                  {plan.couponCodes[0]}
+                </span>
+              </p>
             )}
           </div>
         ))}
