@@ -26,7 +26,7 @@ const config = {
         // setupFeePriceId: "price_1RHKpi04Oq5D44E35mOfM82i",  //Test Key
         setupFeePriceId: "price_1RJHKL04Oq5D44E3J2xDFpmu",  //Prod Key
         // Multiple coupon codes for discounts
-        couponCodes: ["FAEXPERTS2025", "ADMINTEST"],
+        couponCodes: ["FAExperts2025", "ADMINTEST"],
         //  REQUIRED - Name of the plan, displayed on the pricing page
         name: "FA Wizard™",
         isFeatured: true,
