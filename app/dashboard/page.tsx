@@ -119,111 +119,106 @@ export default function Dashboard() {
           {profile?.is_subscribed ? "Customer Information" : "Subscribe to FA Wizard"}
         </h1>
         
-        {/* Temporary section to display user ID and admin status */}
-        {/* {user && (
-          <div className="bg-yellow-100 p-4 rounded-lg">
-            <h2 className="font-bold mb-2">Your User ID (for admin setup):</h2>
-            <p className="font-mono bg-white p-2 rounded">{user.id}</p>
-            <p className="text-sm mt-2">Copy this ID to make yourself an admin in the SQL editor.</p>
-            <p className="text-sm mt-2">
-              Current admin status: {profile?.is_admin ? "✅ You are an admin" : "❌ You are not an admin"}
-            </p>
-            <p className="text-sm mt-2">
-              Subscription status: {profile?.is_subscribed ? "✅ You are subscribed" : "❌ You are not subscribed"}
-            </p>
-          </div>
-        )} */}
-        
         {profile?.is_subscribed ? (
           <>
             <div className="bg-white p-6 rounded-lg shadow">
-              <div className="mb-6">
-                <a
-                  href="https://www.fawizard.net/login"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block bg-[#003767] text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-[#FDB913] transition-colors"
-                >
-                  Access {schools[0].short_school_name}
-                </a>
-              </div>
               {schools.length > 0 ? (
-                <div className="space-y-6">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-xl font-semibold">Your Registered School</h3>
-                    <button
-                      onClick={() => setShowUpdateForm(true)}
-                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                <>
+                  <div className="mb-6">
+                    <a
+                      href="https://www.fawizard.net/login"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block bg-[#003767] text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-[#FDB913] transition-colors"
                     >
-                      Update School Information
-                    </button>
+                      Access {schools[0]?.short_school_name || 'FA Wizard Portal'}
+                    </a>
                   </div>
-                  
-                  {showUpdateForm ? (
-                    <div className="text-center py-8">
-                      <p className="text-red-600 mb-4">School information updates are temporarily disabled.</p>
-                      <p className="text-gray-600 mb-4">
-                        If you need to update your school information, please contact our support team at{' '}
-                        <a href={`mailto:${config.resend.supportEmail}`} className="text-blue-600 hover:underline">
-                          {config.resend.supportEmail}
-                        </a>
-                      </p>
+                  <div className="space-y-6">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-xl font-semibold">Your Registered School</h3>
                       <button
-                        onClick={() => setShowUpdateForm(false)}
-                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                        onClick={() => setShowUpdateForm(true)}
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                       >
-                        Back to School Information
+                        Update School Information
                       </button>
                     </div>
-                  ) : (
-                    <div className="border p-4 rounded">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <h4 className="font-semibold text-lg mb-4">School Information</h4>
-                          <div className="space-y-2">
-                            <p><span className="font-medium">Full School Name:</span> {schools[0].full_school_name}</p>
-                            <p><span className="font-medium">Short School Name:</span> {schools[0].short_school_name}</p>
-                            <p><span className="font-medium">Address:</span> {schools[0].street_address}</p>
-                            <p><span className="font-medium">City:</span> {schools[0].city}</p>
-                            <p><span className="font-medium">State:</span> {schools[0].state}</p>
-                            <p><span className="font-medium">ZIP Code:</span> {schools[0].zip_code}</p>
-                          </div>
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-lg mb-4">Contact Information</h4>
-                          <div className="space-y-4">
-                            <div>
-                              <h5 className="font-medium mb-2">Primary Contact</h5>
-                              <div className="space-y-1">
-                                <p><span className="font-medium">Name:</span> {schools[0].primary_contact?.full_name}</p>
-                                <p><span className="font-medium">Title:</span> {schools[0].primary_contact?.title}</p>
-                                <p><span className="font-medium">Email:</span> {schools[0].primary_contact?.email}</p>
-                                <p><span className="font-medium">Office Phone:</span> {schools[0].primary_contact?.office_phone}</p>
-                                <p><span className="font-medium">Cell Phone:</span> {schools[0].primary_contact?.cell_phone}</p>
-                              </div>
+                    
+                    {showUpdateForm ? (
+                      <div className="text-center py-8">
+                        <p className="text-red-600 mb-4">School information updates are temporarily disabled.</p>
+                        <p className="text-gray-600 mb-4">
+                          If you need to update your school information, please contact our support team at{' '}
+                          <a href={`mailto:${config.resend.supportEmail}`} className="text-blue-600 hover:underline">
+                            {config.resend.supportEmail}
+                          </a>
+                        </p>
+                        <button
+                          onClick={() => setShowUpdateForm(false)}
+                          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                        >
+                          Back to School Information
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="border p-4 rounded">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <h4 className="font-semibold text-lg mb-4">School Information</h4>
+                            <div className="space-y-2">
+                              <p><span className="font-medium">Full School Name:</span> {schools[0].full_school_name}</p>
+                              <p><span className="font-medium">Short School Name:</span> {schools[0].short_school_name}</p>
+                              <p><span className="font-medium">Address:</span> {schools[0].street_address}</p>
+                              <p><span className="font-medium">City:</span> {schools[0].city}</p>
+                              <p><span className="font-medium">State:</span> {schools[0].state}</p>
+                              <p><span className="font-medium">ZIP Code:</span> {schools[0].zip_code}</p>
                             </div>
-                            <div>
-                              <h5 className="font-medium mb-2">Secondary Contact</h5>
-                              <div className="space-y-1">
-                                {schools[0].secondary_contact && (
-                                  <>
-                                    <p><span className="font-medium">Name:</span> {schools[0].secondary_contact?.full_name}</p>
-                                    <p><span className="font-medium">Title:</span> {schools[0].secondary_contact?.title}</p>
-                                    <p><span className="font-medium">Email:</span> {schools[0].secondary_contact?.email}</p>
-                                    <p><span className="font-medium">Office Phone:</span> {schools[0].secondary_contact?.office_phone}</p>
-                                    <p><span className="font-medium">Cell Phone:</span> {schools[0].secondary_contact?.cell_phone}</p>
-                                  </>
-                                )}
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-lg mb-4">Contact Information</h4>
+                            <div className="space-y-4">
+                              <div>
+                                <h5 className="font-medium mb-2">Primary Contact</h5>
+                                <div className="space-y-1">
+                                  <p><span className="font-medium">Name:</span> {schools[0].primary_contact?.full_name}</p>
+                                  <p><span className="font-medium">Title:</span> {schools[0].primary_contact?.title}</p>
+                                  <p><span className="font-medium">Email:</span> {schools[0].primary_contact?.email}</p>
+                                  <p><span className="font-medium">Office Phone:</span> {schools[0].primary_contact?.office_phone}</p>
+                                  <p><span className="font-medium">Cell Phone:</span> {schools[0].primary_contact?.cell_phone}</p>
+                                </div>
+                              </div>
+                              <div>
+                                <h5 className="font-medium mb-2">Secondary Contact</h5>
+                                <div className="space-y-1">
+                                  {schools[0].secondary_contact && (
+                                    <>
+                                      <p><span className="font-medium">Name:</span> {schools[0].secondary_contact?.full_name}</p>
+                                      <p><span className="font-medium">Title:</span> {schools[0].secondary_contact?.title}</p>
+                                      <p><span className="font-medium">Email:</span> {schools[0].secondary_contact?.email}</p>
+                                      <p><span className="font-medium">Office Phone:</span> {schools[0].secondary_contact?.office_phone}</p>
+                                      <p><span className="font-medium">Cell Phone:</span> {schools[0].secondary_contact?.cell_phone}</p>
+                                    </>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
+                </>
               ) : (
-                <SchoolInformationForm onSuccess={handleUpdateSuccess} />
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <h3 className="text-xl font-semibold mb-4">Complete Your Registration</h3>
+                    <p className="text-gray-600 mb-6">
+                      Please provide your school information to access the FA Wizard portal.
+                    </p>
+                  </div>
+                  <SchoolInformationForm onSuccess={handleUpdateSuccess} />
+                </div>
               )}
             </div>
           </>
