@@ -59,39 +59,52 @@ const PrivacyPolicy = () => {
         >
           {`
           Privacy Policy for FA Wizard™
-Effective Date:  April 16, 2025
+ERevision/Effective Date: May 1, 2025
 
-At FA Wizard™, your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information when you use our website at https://fawizard.com.
+At FA Wizard™, your privacy is important to us. This Privacy Policy explains how we collect,
+use, and protect your personal information when you use our website at https://fawizard.com.
 
-1. Information We Collect:
-We collect the following personal information only when you create an account and/or purchase services:
-	•	Name
-	•	Email address
-	•	School information
-	•	Payment information
+1. INFORMATION WE COLLECT:
+We collect the following personal information only when you create an account and/or
+purchase services:
+• Name of account creator
+• Email address
+• School information
+• Payment information
+We also collect non-personal information through cookies to enhance your experience on
+our website.
 
-We also collect non-personal information through cookies to enhance your experience on our website.
+2. PURPOSE OF DATA COLLECTION:
 
-2. Purpose of Data Collection:
-We collect your data solely for the purpose of processing orders and providing you with our compliance and automation services.
+We collect your data solely for the purpose of processing orders and providing you with our
+compliance and automation services.
 
-3. Data Sharing:
-We do not share your personal data with any third parties. Your information is used only to deliver and improve our services.
+3. DATA SHARING:
 
-4. Children’s Privacy:
-FA Wizard™ does not knowingly collect or store personal information from children under the age of 13. If we learn that we have collected such information, we will take appropriate steps to delete it.
+We do not share your personal data with any third parties. Your information is used only to
+deliver and improve our services.
 
-5. Updates to This Policy:
-We may update this Privacy Policy from time to time. If we do, we will notify our clients by email. Continued use of the website after any updates indicates acceptance of the revised policy.
+4. CHILDREN’S PRIVACY:
 
-6. Contact Us:
+FA Wizard™ does not knowingly collect or store personal information from children under
+the age of 13. If we learn that we have collected such information, we will take appropriate
+steps to delete it.
+
+5. UPDATES TO THIS POLICY:
+
+We may update this Privacy Policy from time to time. If we do, we will notify our clients by
+email. Continued use of the website after any updates indicates acceptance of the revised
+policy.
+
+6. CONTACT US:
+
 If you have any questions or concerns about this Privacy Policy, please contact us at:
-Financial Aid Experts, Inc. 
-5651 Main St.  Suite 8-305
+Financial Aid Experts, Inc.
+5651 Main St. Suite 8-305
 Buffalo, NY 14221
 
-You can also contact us by telephone (during normal business hours in the Eastern time zone of the United States) at (866) 767-5692.
-
+You can also contact us by telephone (during normal business hours in the Eastern time
+zone of the United States) at (866) 767-5692.
           `}
         </pre>
       </div>
