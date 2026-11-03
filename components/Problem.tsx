@@ -51,12 +51,12 @@ const Problem = () => {
         “Achieving and Maintaining Compliance Can Be Overwhelming”
         </h2>
         <p className="max-w-5xl mx-auto text-lg opacity-90 leading-relaxed mb-12 md:mb-20 whitespace-pre-line">
-          If you own or operate a small school that participates in federal financial aid, you know there are an endless number of
+          If you own or operate a non-degree school that participates in federal financial aid, you know there are an endless number of
           regulatory requirements – from admissions, registrar, business office, and placement rules and disclosures - to
           requirements for campus security, non-discrimination, violence against women, voter registration, information privacy,
           vaccinations, drugs, alcohol, Constitution Day – the list goes on and on…
 
-          {'\n\n'}How does a small school manage it all? Even if you can keep up, you’ll need to spend hundreds of hours each year just
+          {'\n\n'}How does a non-degree school manage it all? Even if you can keep up, you’ll need to spend hundreds of hours each year just
           in maintenance – and as soon as you get caught up, the federal regulators will change the rules or add new ones…
 
           {'\n\n'}<span className="text-[#FDB913]">The Solution? Automate it all with FA Wizard™</span>

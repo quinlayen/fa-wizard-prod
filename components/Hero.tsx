@@ -82,7 +82,7 @@ const Hero = () => {
           {cta}
           
           <p className="text-1xl font-bold text-[#003767] leading-tight font-oswald text-center">
-          <span className="text-[#FDB913]">Limited-Time Offer:</span> Get the revolutionary FA Wizard™ system for only <span className="text-[#FDB913]">$295 / month!</span>
+          <span className="text-[#FDB913]">Limited-Time Offer:</span> Get the revolutionary FA Wizard™ system for only <span className="text-[#FDB913]">${config.stripe.plans[0].price} / month!</span>
           </p>
         </div>
       </div>

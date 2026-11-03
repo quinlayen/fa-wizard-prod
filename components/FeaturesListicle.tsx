@@ -26,7 +26,7 @@ const launchBullets = ['P&P Manual, Disclosure Site, Calendar',
   'Built-in audit confidence'
 ];
 
-const customizeBullets = ['Every policy, web page, & reminder editable', 
+const customizeBullets = ['Custom-built for any type of school or program',
   'Add school-specific rules or formatting', 
   'Merge your procedures with compliance', 
   'No technical skills required'
@@ -42,7 +42,7 @@ const featureNames = {
   policies: "Policies & Easy Procedures",
   disclosures: "Website Disclosures",
   calendar: "Reminder Calendar",
-  customize: "Totally Customizable",
+  customize: "Highly Customizable",
   updates: "Continuous Updates",
   setup: "Setup"
 };

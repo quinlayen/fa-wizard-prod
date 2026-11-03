@@ -100,13 +100,13 @@ const Pricing = () => {
                     className="w-full bg-[#003767] text-white hover:bg-[#002a4d]"
                   /> */}
                   <p className="text-sm text-center text-base-content/80 font-medium">
-                    *Special introductory rate guaranteed for twenty-four months. Regular price is <s>$395</s>/month.
+                    *Special introductory rate guaranteed for twenty-four months. Regular price is <s>${plan.priceAnchor}</s>/month.
                   </p>
                   <p className="text-sm text-center text-base-content/80 font-medium">
-                    *Use coupon code <strong>FAExperts2025</strong> to receive this discounted rate.
+                    *Use coupon code <strong>{plan.couponCodes?.[0]}</strong> to receive this discounted rate.
                   </p>
                   <p className="text-sm text-center text-base-content/80 font-medium">
-                    *One-time set-up fee of $100 also applies. 
+                    *One-time set-up fee of ${plan.setupFee} also applies. The fee includes up to four hours of online consultant support for set-up and implementation.
                   </p>
                 </div>
               </div>

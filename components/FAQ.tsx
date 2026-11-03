@@ -14,7 +14,7 @@ interface FAQItemProps {
 const faqList: FAQItemProps[] = [
   {
     question: "What is the FA Wizard™ system?",
-    answer: <div className="space-y-2 leading-relaxed">FFA Wizard™ is an automated system designed to help small schools manage Title IV
+    answer: <div className="space-y-2 leading-relaxed">FFA Wizard™ is an automated system designed to help non-degree schools manage Title IV
 compliance efficiently and affordably.</div>,
   },
   {

@@ -53,7 +53,7 @@ export default function SubscribeForm() {
               )}
               <span className="text-gray-600 ml-2">/month</span>
             </div>
-            
+
             <ul className="space-y-2 mb-6">
               {plan.features.map((feature, index) => (
                 <li key={index} className="flex items-center">
@@ -76,7 +76,7 @@ export default function SubscribeForm() {
             {plan.couponCodes && plan.couponCodes.length > 0 && (
               <p className="text-gray-600 mb-4 text-center">
                 <span className="block mb-2">
-                  * Enter for 
+                  * Enter for a discount of
                   <span className="font-semibold text-gray-800"> $100/month </span> 
                   for the first 
                   <span className="font-semibold text-gray-800"> 24 months</span>:

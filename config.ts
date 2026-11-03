@@ -26,18 +26,18 @@ const config = {
         // setupFeePriceId: "price_1RHKpi04Oq5D44E35mOfM82i",  //Test Key
         setupFeePriceId: "price_1RJHKL04Oq5D44E3J2xDFpmu",  //Prod Key
         // Multiple coupon codes for discounts
-        couponCodes: ["FAExperts2025", "ADMINTEST"],
+        couponCodes: ["FAExperts", "ADMINTEST"],
         //  REQUIRED - Name of the plan, displayed on the pricing page
         name: "FA Wizard™",
         isFeatured: true,
         // A friendly description of the plan, displayed on the pricing page. Tip: explain why this plan and not others
         description: "Complete Title IV compliance solution",
-        // The price you want to display, the one user will be charged on Stripe.
-        price: 295,
+        // Display price. Stripe charges are controlled separately by priceId and the coupon.
+        price: 395,
         // If you have an anchor price (i.e. $29) that you want to display crossed out, put it here. Otherwise, leave it empty
-        priceAnchor: 395,
+        priceAnchor: 495,
         // Setup fee amount to display
-        setupFee: 100,
+        setupFee: 250,
         features: [
           {
             name: "Instantly access 36+ prewritten federal policies",
