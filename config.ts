@@ -21,10 +21,12 @@ const config = {
       {
         // REQUIRED — we use this to find the plan in the webhook (for instance if you want to update the user's credits based on the plan)
         // priceId: "price_1RHKnO04Oq5D44E3JUIsVFRE",  //Test Key
-        priceId: "price_1RJHKP04Oq5D44E39uLyee83",  //Prod Key
+        priceId: "price_1UY08504Oq5D44E39rdcJZKy",  // Live: $495/month before promotion
+        // Recognize checkout sessions opened before the pricing change.
+        legacyPriceIds: ["price_1RJHKP04Oq5D44E39uLyee83"],
         // Setup fee price ID
         // setupFeePriceId: "price_1RHKpi04Oq5D44E35mOfM82i",  //Test Key
-        setupFeePriceId: "price_1RJHKL04Oq5D44E3J2xDFpmu",  //Prod Key
+        setupFeePriceId: "price_1UY0Ak04Oq5D44E3UnXEojwi",  // Live: $250 one-time
         // Multiple coupon codes for discounts
         couponCodes: ["FAExperts", "ADMINTEST"],
         //  REQUIRED - Name of the plan, displayed on the pricing page

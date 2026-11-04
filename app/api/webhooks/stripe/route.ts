@@ -53,7 +53,9 @@ export async function POST(req: NextRequest) {
         const customerId = session?.customer;
         const priceId = session?.line_items?.data[0]?.price.id;
         const userId = stripeObject.client_reference_id;
-        const plan = configFile.stripe.plans.find((p) => p.priceId === priceId);
+        const plan = configFile.stripe.plans.find(
+          (p) => p.priceId === priceId || p.legacyPriceIds?.includes(priceId)
+        );
 
         console.log('Customer ID:', customerId);
         console.log('Price ID:', priceId);
