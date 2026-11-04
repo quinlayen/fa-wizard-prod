@@ -1,29 +1,7 @@
 import Link from "next/link";
+import LegalContent from "@/components/LegalContent";
 import { getSEOTags } from "@/libs/seo";
 import config from "@/config";
-
-// CHATGPT PROMPT TO GENERATE YOUR TERMS & SERVICES — replace with your own data 👇
-
-// 1. Go to https://chat.openai.com/
-// 2. Copy paste bellow
-// 3. Replace the data with your own (if needed)
-// 4. Paste the answer from ChatGPT directly in the <pre> tag below
-
-// You are an excellent lawyer.
-
-// I need your help to write a simple Terms & Services for my website. Here is some context:
-// - Website: https://shipfa.st
-// - Name: ShipFast
-// - Contact information: marc@shipfa.st
-// - Description: A JavaScript code boilerplate to help entrepreneurs launch their startups faster
-// - Ownership: when buying a package, users can download code to create apps. They own the code but they do not have the right to resell it. They can ask for a full refund within 7 day after the purchase.
-// - User data collected: name, email and payment information
-// - Non-personal data collection: web cookies
-// - Link to privacy-policy: https://shipfa.st/privacy-policy
-// - Governing Law: France
-// - Updates to the Terms: users will be updated by email
-
-// Please write a simple Terms & Services for my site. Add the current date. Do not add or explain your reasoning. Answer:
 
 export const metadata = getSEOTags({
   title: `Terms and Conditions | ${config.appName}`,
@@ -32,7 +10,7 @@ export const metadata = getSEOTags({
 
 const TOS = () => {
   return (
-    <main className="max-w-xl mx-auto">
+    <main className="max-w-3xl mx-auto">
       <div className="p-5">
         <Link href="/" className="btn btn-ghost">
           <svg
@@ -53,14 +31,9 @@ const TOS = () => {
           Terms and Conditions for {config.appName}
         </h1>
 
-        <pre
-          className="leading-relaxed whitespace-pre-wrap"
-          style={{ fontFamily: "sans-serif" }}
-        >
+        <LegalContent>
           {`
-Terms and Conditions of Service for FA Wizard™
-
-Revision/Effective Date: May 1, 2025
+Revision/Effective Date: August 2026
 
 Welcome to FA Wizard™! By creating an account and providing information through our
 website at https://fawizard.com, you agree that the educational institution you represent will
@@ -159,7 +132,7 @@ FA Wizard TM is NOT a “third-party servicer” arrangement under federal regul
 34CFR668.2 (specifically, the definition of a third-party servicer). Expressly, no product,
 employee, or contractor of FA Experts® shall engage in any activity which would qualify as
 “administer(ing), through either manual or automated processing, any aspect of the
-institution&#39;s participation in any Title IV, HEA program”, and/or as “performing any function
+institution's participation in any Title IV, HEA program”, and/or as “performing any function
 required by any statutory provision of or applicable to Title IV of the HEA, any regulatory
 provision prescribed under that statutory authority, or any applicable special arrangement,
 agreement, or limitation entered into under the authority of statutes applicable to Title IV of
@@ -199,8 +172,8 @@ jurisdiction in the world.
 
 11. INJUNCTIVE RELIEF:
 
-A breach or threatened breach by the client of the provisions of Section 10 (&quot;Ownership and
-Confidentiality of Intellectual Property&quot;) in any respect will be material and will result in
+A breach or threatened breach by the client of the provisions of Section 10 ("Ownership and
+Confidentiality of Intellectual Property") in any respect will be material and will result in
 substantial and irreparable injury to FA Experts®. In the event of a breach or threatened
 breach of Section 10 of this Agreement, FA Experts® will be entitled to an injunction
 restraining the Client therefrom. This provision shall not be construed as prohibiting FA
@@ -244,7 +217,7 @@ presented to FA Experts® or its attorney.
 The client hereby agrees to indemnify and hold FA Experts® harmless, at all times from and
 after the beginning date of the Term, from all counter-suits, claims, damages, liability and
 expense, including legal fees, arising from or in any way connected with the breach by the
-client of any of these Terms and Conditions, and/or FA Expert&#39;s enforcement of its rights
+client of any of these Terms and Conditions, and/or FA Expert's enforcement of its rights
 under these Terms and Conditions, at law or in equity, including without limitation: (i) suit for
 damages, (ii) seeking of such other legal and equitable remedies, (iii) collection of any debts
 and/or damages, and (iv) enforcement of any court order or settlement, including but not
@@ -332,7 +305,7 @@ By accessing the FA Wizard™ system, the individual user acknowledges having re
 understood, and agreed to abide by the Terms and Conditions of Service on behalf of the
 client institution.
 `}
-        </pre>
+        </LegalContent>
       </div>
     </main>
   );
