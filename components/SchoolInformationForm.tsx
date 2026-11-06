@@ -132,6 +132,7 @@ export default function SchoolInformationForm({ school, onCancel, onSuccess }: S
       const { data: primaryContact, error: primaryError } = await supabase
         .from('contacts')
         .upsert({
+          id: school?.primary_contact?.id,
           full_name: formData.primary_contact.full_name,
           title: formData.primary_contact.title,
           email: formData.primary_contact.email,
@@ -147,6 +148,7 @@ export default function SchoolInformationForm({ school, onCancel, onSuccess }: S
       const { data: secondaryContact, error: secondaryError } = await supabase
         .from('contacts')
         .upsert({
+          id: school?.secondary_contact?.id,
           full_name: formData.secondary_contact.full_name,
           title: formData.secondary_contact.title,
           email: formData.secondary_contact.email,
@@ -162,6 +164,7 @@ export default function SchoolInformationForm({ school, onCancel, onSuccess }: S
       const { error: schoolError } = await supabase
         .from('schools')
         .upsert({
+          id: school?.id,
           user_id: user.id,
           full_school_name: formData.full_school_name,
           short_school_name: formData.short_school_name,
@@ -171,7 +174,7 @@ export default function SchoolInformationForm({ school, onCancel, onSuccess }: S
           zip_code: formData.zip_code,
           primary_contact_id: primaryContact.id,
           secondary_contact_id: secondaryContact.id,
-        });
+        }, { onConflict: 'user_id' });
 
       if (schoolError) throw schoolError;
 
@@ -404,4 +407,4 @@ export default function SchoolInformationForm({ school, onCancel, onSuccess }: S
       </div>
     </form>
   );
-} 
+}
