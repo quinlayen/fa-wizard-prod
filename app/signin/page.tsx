@@ -2,11 +2,12 @@
 
 import React from 'react';
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/libs/supabase/client";
 import toast from "react-hot-toast";
 import config from "@/config";
 import PhoneInput from "@/components/PhoneInput";
+import { getAuthCallbackUrl } from "@/libs/auth";
 
 // This a login/singup page for Supabase Auth.
 // Successfull login redirects to /api/auth/callback where the Code Exchange is processed (see app/api/auth/callback/route.js).
@@ -20,6 +21,12 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
 
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).has("error")) {
+      toast.error("We could not complete your sign-in. Please request a new magic link.");
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -28,35 +35,16 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      // Check if user exists before proceeding
-      const { data: existingProfile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', email)
-        .single();
-
-      const userExists = !!existingProfile;
-
-      // If user exists and trying to sign up, show error
-      if (userExists && isSignUp) {
-        toast.error('Email already registered. Please sign in.');
-        setIsSignUp(false);
-        setIsLoading(false);
-        return;
-      }
-
-      // If user doesn't exist and trying to sign in, show error
-      if (!userExists && !isSignUp) {
-        toast.error('Email not found. Please sign up.');
-        setIsSignUp(true);
-        setIsLoading(false);
-        return;
-      }
-
+      // Let Auth check account existence. Profiles are protected by RLS and
+      // must not be queried anonymously to decide whether login is allowed.
       const { error: signInError } = await supabase.auth.signInWithOtp({
-        email,
+        email: email.trim().toLowerCase(),
         options: {
-          emailRedirectTo: `${config.domainName}/api/auth/callback`,
+          shouldCreateUser: isSignUp,
+          emailRedirectTo: getAuthCallbackUrl(
+            config.domainName,
+            new URLSearchParams(window.location.search).get("next")
+          ),
           data: isSignUp ? {
             first_name: firstName.trim(),
             last_name: lastName.trim(),

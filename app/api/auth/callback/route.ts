@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/libs/supabase/server";
+import { getSafeAuthDestination } from "@/libs/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -7,7 +8,7 @@ export const dynamic = "force-dynamic";
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const next = requestUrl.searchParams.get("next") || "/dashboard";
+  const next = getSafeAuthDestination(requestUrl.searchParams.get("next"));
 
   if (code) {
     // Create Supabase client
@@ -19,7 +20,7 @@ export async function GET(request: Request) {
       
       if (exchangeError) {
         console.error("Error exchanging code for session:", exchangeError);
-        return NextResponse.redirect(`${requestUrl.origin}/error?message=${encodeURIComponent(exchangeError.message)}`);
+        return NextResponse.redirect(`${requestUrl.origin}/signin?error=authentication_failed`);
       }
 
       if (session) {
@@ -27,40 +28,47 @@ export async function GET(request: Request) {
           // Get user metadata that was passed during sign-up
           const metadata = session.user.user_metadata;
           
-          // Create or update profile
-          const { error: profileError } = await supabase
+          // Existing profiles contain admin flags, billing links and contact
+          // details. Only create a profile when it is genuinely missing.
+          const { data: existingProfile, error: lookupError } = await supabase
             .from('profiles')
-            .upsert({
-              id: session.user.id,
-              email: session.user.email,
-              first_name: metadata?.first_name || '',
-              last_name: metadata?.last_name || '',
-              phone: metadata?.phone || '',
-              updated_at: new Date().toISOString(),
-            }, {
-              onConflict: 'id',
-              // Don't update these fields if they already exist
-              ignoreDuplicates: false,
-            });
+            .select('id')
+            .eq('id', session.user.id)
+            .maybeSingle();
 
-          if (profileError) {
-            console.error("Error updating profile:", profileError);
-            throw profileError;
+          if (lookupError) throw lookupError;
+
+          if (!existingProfile) {
+            const { error: profileError } = await supabase
+              .from('profiles')
+              .insert({
+                id: session.user.id,
+                email: session.user.email,
+                first_name: metadata?.first_name || '',
+                last_name: metadata?.last_name || '',
+                phone: metadata?.phone || '',
+                updated_at: new Date().toISOString(),
+              });
+
+            if (profileError) {
+              console.error("Error creating profile:", profileError);
+              throw profileError;
+            }
           }
           
           // Redirect to the intended destination
           return NextResponse.redirect(`${requestUrl.origin}${next}`);
         } catch (error) {
           console.error("Error in callback handler:", error);
-          return NextResponse.redirect(`${requestUrl.origin}/error?message=${encodeURIComponent(error.message)}`);
+          return NextResponse.redirect(`${requestUrl.origin}/signin?error=profile_unavailable`);
         }
       }
     } catch (error) {
       console.error("Error in auth callback:", error);
-      return NextResponse.redirect(`${requestUrl.origin}/error?message=${encodeURIComponent(error.message)}`);
+      return NextResponse.redirect(`${requestUrl.origin}/signin?error=authentication_failed`);
     }
   }
 
   // Something went wrong
-  return NextResponse.redirect(`${requestUrl.origin}/error?message=Invalid authentication code`);
+  return NextResponse.redirect(`${requestUrl.origin}/signin?error=invalid_authentication_code`);
 }
