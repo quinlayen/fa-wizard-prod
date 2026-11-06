@@ -1,7 +1,7 @@
 -- Add first_name and last_name columns
 ALTER TABLE profiles
-ADD COLUMN first_name text,
-ADD COLUMN last_name text;
+ADD COLUMN IF NOT EXISTS first_name text,
+ADD COLUMN IF NOT EXISTS last_name text;
 
 -- Split existing full_name data into first_name and last_name
 UPDATE profiles
@@ -17,4 +17,4 @@ ALTER COLUMN last_name SET DEFAULT '';
 
 -- We'll keep full_name temporarily for backward compatibility
 -- After confirming everything works, you can run:
--- ALTER TABLE profiles DROP COLUMN full_name; 
+-- ALTER TABLE profiles DROP COLUMN full_name;

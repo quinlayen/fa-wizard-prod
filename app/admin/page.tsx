@@ -14,15 +14,20 @@ export default async function AdminPage() {
   } = await supabase.auth.getUser();
   
   if (!user) {
-    redirect("/signin");
+    redirect("/signin?next=%2Fadmin");
   }
 
   // Check if user is admin (you'll need to implement this check based on your auth setup)
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("is_admin")
     .eq("id", user.id)
     .single();
+
+  if (profileError) {
+    console.error("Admin profile lookup failed:", profileError.code);
+    throw new Error("Unable to verify admin access. Please try again later.");
+  }
 
   if (!profile?.is_admin) {
     redirect("/dashboard");
@@ -37,4 +42,4 @@ export default async function AdminPage() {
       </div>
     </div>
   );
-} 
+}
